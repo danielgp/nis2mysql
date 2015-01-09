@@ -1361,16 +1361,14 @@ class ChangeMySqlAdvancedFeatures
 
     private function setFileHeader($fileKind)
     {
-        switch (php_uname('m')) {
-            case 'AMD64':
-                $serverMachineType = 'x64 (64 bit)';
-                break;
-            case 'i386':
-                $serverMachineType = 'x86 (32 bit)';
-                break;
-            default:
-                $serverMachineType = php_uname('m');
-                break;
+        $architectureType = [
+            'AMD64' => 'x64 (64 bit)',
+            'i386'  => 'x86 (32 bit)',
+        ];
+        if (in_array(php_uname('m'), array_keys($architectureType))) {
+            $serverMachineType = $architectureType[php_uname('m')];
+        } else {
+            $serverMachineType = php_uname('m');
         }
         $sLineToWrite = [
             '-- File started at                     ' . date('Y-m-d H:i:s'),

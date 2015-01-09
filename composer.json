@@ -1,7 +1,6 @@
 {
     "name": "danielgp/nis2mysql",
     "description": "This package is intended to normalize variaous setting to user MySQL databases",
-    "time": "2014-12-09 22:55:00",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -14,8 +13,18 @@
     "require": {
         "php": ">=5.4",
         "ext-mysqli": "*",
-        "danielgp/common-lib": ">=1.0.5",
+        "danielgp/common-lib": ">=1.1.8",
         "inetsys/phpgettext":">=1.0.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "source/",
+            "danielgp\\common_lib\\": "vendor/danielgp/common-lib/"
+        },
+        "classmap": [
+            "source/AppQueries.php",
+            "source/ChangeMySqlAdvancedFeatures.php"
+        ]
     },
     "minimum-stability": "stable",
     "prefer-stable":    true,
