@@ -1,0 +1,107 @@
+# Romanian translations for NormalizeInternalStructuresInYourMySQL package.
+# Copyright (C) 2014 Daniel Popiniuc
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: NormalizeInternalStructuresInYourMySQL\n"
+"POT-Creation-Date: 2014-12-06 22:09-0800\n"
+"PO-Revision-Date: 2014-12-15 23:04+0100\n"
+"Last-Translator: Daniel Popiniuc <danielpopiniuc@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+msgid "i18n_Feedback_AnalyzeImpossible"
+msgstr "%s din MySQL nu pot fi analizate datorită conexiunii ne-realizate! Ajustati parametrii de conectare (nume server = %s, port: %s, nume utilizator: %s, baza de date: %s) si încercați din nou..."
+
+msgid "i18n_Feedback_ConnectionError"
+msgstr "Eroare la conectare (nr.: %d, mesaj de la server: %s, nume server = %s, port: %s, nume utilizator: %s, baza de date: %s)"
+
+msgid "i18n_Feedback_Error"
+msgstr "Eroare"
+
+msgid "i18n_Feedback_MultipleSelectionAdvise"
+msgstr "Pentru selecţie multiplă ţineţi apăsată tasta Ctrl"
+
+msgid "i18n_Feedback_UndefinedAction"
+msgstr "Acţiune nedefinită..."
+
+msgid "i18n_Feedback_UndefinedQuery"
+msgstr "Interogarea MySQL cu eticheta %s nu este definită..."
+
+msgid "i18n_TabAction"
+msgstr "Acţiune"
+
+msgid "i18n_TabAction_OptionList"
+msgstr "Listează structurile avansate după un autor (definer) ales"
+
+msgid "i18n_TabAction_OptionModify"
+msgstr "Modifică autorul (definer-ul) ales în structurile avansate"
+
+msgid "i18n_TabAction_ChooseActionToTake"
+msgstr "Alegeţi acţiunea dorită"
+
+msgid "i18n_TabAction_IchoseProceed"
+msgstr "Am ales acţiunea dorită, mai departe!"
+
+msgid "i18n_TabAdvancedFeature"
+msgstr "Alege structura avansată"
+
+msgid "i18n_TabAdvancedFeature_Choice_Events"
+msgstr "Evenimente (%d cazuri)"
+
+msgid "i18n_TabAdvancedFeature_Choice_Routines"
+msgstr "Rutine (%d cazuri)"
+
+msgid "i18n_TabAdvancedFeature_Choice_Triggers"
+msgstr "Declanşatoare (%d cazuri)"
+
+msgid "i18n_TabAdvancedFeature_Choice_Views"
+msgstr "Vizualizări (%d cazuri)"
+
+msgid "i18n_TabAdvancedFeature_Choose"
+msgstr "Alege una sau mai mmulte structuri avansate din lista de mai jos"
+
+msgid "i18n_TabAdvancedFeature_IchoseProceed"
+msgstr "Am ales, mai departe!"
+
+msgid "i18n_TabAssesVariations"
+msgstr "Analizează variaţiile"
+
+msgid "i18n_TabAssesVariations_ChooseDatabases"
+msgstr "Alegeţi bazele de date de analizat pentru a analiza variaţiile Autorilor (Definer-ilor)"
+
+msgid "i18n_TabAssesVariations_IchoseProceed"
+msgstr "Am ales bazele mele de date, mai departe!"
+
+msgid "i18n_TabAssesVariations_NoValuesToChooseFrom"
+msgstr "Parese că nu aveţi nici o bază de date non-standard în instanţa MySQL aleasă [%s]... Asta înseamnă că am ajuns într-un punct mort din care nu se mai poate face nimic!"
+
+msgid "i18n_TabDebug"
+msgstr "Parametrii pentru depanare"
+
+msgid "i18n_TabServer"
+msgstr "Server"
+
+msgid "i18n_TabServer_ChooseServerToConnectTo"
+msgstr "Alegeţi serverul MySQL la care doriţi să vă conectaţi"
+
+msgid "i18n_TabServer_IchoseProceed"
+msgstr "Am ales serverul MySQL, mai departe!"
+
+msgid "i18n_TabVariations"
+msgstr "Alege valoarea din variaţiile determinate"
+
+msgid "i18n_TabVariations__ChooseValue"
+msgstr "Alege o valoare din lista de mai jos"
+
+msgid "i18n_TabVariations__IchoseProceed"
+msgstr "Am ales valoarea dorită, mai departe!"
+
+msgid "i18n_TabVariations__NoValuesToChooseFrom"
+msgstr "Bazele de date selectate nu conţin nici o structură avansată (eveniment/funcţie stocată/procedură stocată/declanşator/vizualizare)... Asta înseamnă că am ajuns într-un punct mort din care nu se mai poate face nimic!"

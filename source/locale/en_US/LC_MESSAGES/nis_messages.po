@@ -1,0 +1,107 @@
+# English translations for NormalizeInternalStructuresToMySQLDatabases package.
+# Copyright (C) 2014 Daniel Popiniuc
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: NormalizeInternalStructuresInYourMySQL\n"
+"POT-Creation-Date: 2014-12-06 22:09-0800\n"
+"PO-Revision-Date: 2014-12-15 23:04+0100\n"
+"Last-Translator: Daniel Popiniuc <danielpopiniuc@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "i18n_Feedback_AnalyzeImpossible"
+msgstr "The MySQL %s cannot be analyzed due to missing MySQL conection! Please adjust your connection parameters (host: %s, port: %s, username: %s, database: %s) and try again..."
+
+msgid "i18n_Feedback_ConnectionError"
+msgstr "Connection error (no.: %d, message from server: %s, host = %s, port: %s, username: %s, database: %s)"
+
+msgid "i18n_Feedback_Error"
+msgstr "Error"
+
+msgid "i18n_Feedback_MultipleSelectionAdvise"
+msgstr "For multiple choices hold down the Ctrl key"
+
+msgid "i18n_Feedback_UndefinedAction"
+msgstr "Action not defined..."
+
+msgid "i18n_Feedback_UndefinedQuery"
+msgstr "The MySQL query labeled %s is not defined..."
+
+msgid "i18n_TabAction"
+msgstr "Action"
+
+msgid "i18n_TabAction_ChooseActionToTake"
+msgstr "Choose your desired action to take"
+
+msgid "i18n_TabAction_OptionList"
+msgstr "List advanced structures by a chosen Definer"
+
+msgid "i18n_TabAction_OptionModify"
+msgstr "Modify Definer of advanced features"
+
+msgid "i18n_TabAction_IchoseProceed"
+msgstr "I chose desired action to take, proceed!"
+
+msgid "i18n_TabAdvancedFeature"
+msgstr "Choose advanced feature"
+
+msgid "i18n_TabAdvancedFeature_Choice_Events"
+msgstr "Events (%d cases)"
+
+msgid "i18n_TabAdvancedFeature_Choice_Routines"
+msgstr "Routines (%d cases)"
+
+msgid "i18n_TabAdvancedFeature_Choice_Triggers"
+msgstr "Triggers (%d cases)"
+
+msgid "i18n_TabAdvancedFeature_Choice_Views"
+msgstr "Views (%d cases)"
+
+msgid "i18n_TabAdvancedFeature_Choose"
+msgstr "Choose one or more values from below list"
+
+msgid "i18n_TabAdvancedFeature_IchoseProceed"
+msgstr "I chose, proceed!"
+
+msgid "i18n_TabAssesVariations"
+msgstr "Assess variations"
+
+msgid "i18n_TabAssesVariations_ChooseDatabases"
+msgstr "Choose your databases of interest, in order to analyze the variations for the Definer"
+
+msgid "i18n_TabAssesVariations_IchoseProceed"
+msgstr "I chose my databases of interest, proceed!"
+
+msgid "i18n_TabAssesVariations_NoValuesToChooseFrom"
+msgstr "It seems you do not have any custom databases in chose MySQL instance [%s]... So this is an end road, nothing more to do from this point on!"
+
+msgid "i18n_TabDebug"
+msgstr "Parameters for Debug"
+
+msgid "i18n_TabServer"
+msgstr "Server"
+
+msgid "i18n_TabServer_ChooseServerToConnectTo"
+msgstr "Choose your MySQL server to connect to"
+
+msgid "i18n_TabServer_IchoseProceed"
+msgstr "I chose target MySQL server, proceed!"
+
+msgid "i18n_TabVariations"
+msgstr "Pick value from detected variations"
+
+msgid "i18n_TabVariations__ChooseValue"
+msgstr "Choose a value from below list"
+
+msgid "i18n_TabVariations__IchoseProceed"
+msgstr "I chose desired value, proceed!"
+
+msgid "i18n_TabVariations__NoValuesToChooseFrom"
+msgstr "Selected database(s) does not contain any advanced features (event/stored function/stored procedure/trigger/view)... Therefore this is an end road, nothing more to do from this point on!"

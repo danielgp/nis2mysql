@@ -1,0 +1,4 @@
+/nbproject/private/
+/source/private.config.inc.php
+*.sql
+/vendor/

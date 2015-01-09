@@ -1,0 +1,25 @@
+{
+    "name": "danielgp/nis2mysql",
+    "description": "This package is intended to normalize variaous setting to user MySQL databases",
+    "time": "2014-12-09 22:55:00",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name":     "Daniel Popiniuc",
+            "email":    "danielpopiniuc@gmail.com",
+            "role":     "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "ext-mysqli": "*",
+        "danielgp/common-lib": ">=1.0.5",
+        "inetsys/phpgettext":">=1.0.11"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable":    true,
+    "archive": {
+        "exclude": ["/nbproject", "*.po", "/scss", "/js/tabber.js", "/vendor", "/tests"]
+    }
+}
