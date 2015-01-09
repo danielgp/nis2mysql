@@ -1,7 +1,6 @@
 <?php
 
 session_start();
-require_once 'config.inc.php';
 ini_set('error_log', $cfg['PhpLogDir'] . '/php' . PHP_VERSION_ID . 'errors_nis2mysql_' . date('Y-m-d') . '.log');
 /**
  * Below 1 file is just a private list of MySQL servers
@@ -12,6 +11,7 @@ ini_set('error_log', $cfg['PhpLogDir'] . '/php' . PHP_VERSION_ID . 'errors_nis2m
  *
  */
 require_once 'private.config.inc.php';
+require_once 'config.inc.php';
 require_once '../vendor/inetsys/phpgettext/gettext.inc';
 require_once '../vendor/autoload.php';
 
