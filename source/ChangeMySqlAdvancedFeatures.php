@@ -34,7 +34,7 @@ namespace danielgp\nis2mysql;
  * @author Daniel-Gheorghe Popiniuc <daniel.popiniuc@honeywell.com>
  * @version 1.0.20140922
  */
-class ChangeMySqlAdvancedFeatures extends AppQueries
+class ChangeMySqlAdvancedFeatures extends ResultFile
 {
 
     use \danielgp\common_lib\CommonCode;
@@ -44,7 +44,6 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
     private $applicationFlags;
     private $actions;
     private $definer           = null;
-    private $fileToStore       = null;
     private $tabs              = 1;
     protected $mySQLconfig     = null;
     protected $mySQLconnection = null;
@@ -64,7 +63,8 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
                 'ro_RO' => 'RO',
             ],
             'default_language'    => $this->configuredDefaultLanguage(),
-            'Name'                => 'Normalize MySQL internal structures',
+            'name'                => 'Normalize MySQL internal structures',
+            'query_class'         => new AppQueries()
         ];
         $this->handleLocalizationNIS();
         $this->actions          = [
@@ -629,7 +629,7 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
         return implode('', $sReturn);
     }
 
-    final private function configDefaults()
+    private function configDefaults()
     {
         if (isset($_REQUEST['serverChoosed'])) {
             session_destroy();
@@ -661,97 +661,98 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
         if (isset($_SESSION['a']['actionChoosed'])) {
             switch ($_SESSION['a']['actionChoosed']) {
                 case 'listAdvancedFeatureByChosenDefiner':
-                    $this->fileToStore['relevant'] = 'info';
-                    if (isset($_REQUEST['dbs'])) {
-                        $_SESSION['a']['dbs'] = $_REQUEST['dbs'];
-                        if (isset($_SESSION['a']['definerToModify'])) {
-                            unset($_SESSION['a']['definerToModify']);
-                        }
-                        if (isset($_SESSION['a']['definerToBe'])) {
-                            unset($_SESSION['a']['definerToBe']);
-                        }
-                        if (isset($_SESSION['a']['afType'])) {
-                            unset($_SESSION['a']['afType']);
-                        }
-                    }
-                    if (isset($_SESSION['a']['dbs'])) {
-                        $this->tabs = 3;
-                    }
-                    if (isset($_REQUEST['definerToModify'])) {
-                        $_SESSION['a']['definerToModify'] = $_REQUEST['definerToModify'];
-                        $_SESSION['a']['definerToBe']     = $_REQUEST['definerToModify'];
-                        if (isset($_SESSION['a']['afType'])) {
-                            unset($_SESSION['a']['afType']);
-                        }
-                    }
-                    if (isset($_SESSION['a']['definerToModify'])) {
-                        $this->tabs = 4;
-                    }
-                    if (isset($_REQUEST['afType'])) {
-                        $_SESSION['a']['afType'] = implode('|', $_REQUEST['afType']);
-                    }
-                    if (isset($_SESSION['a']['afType'])) {
-                        $this->tabs = 5;
-                    }
+                    $this->configDefaultsForListingDefiner();
                     break;
                 case 'modifyDefinerOfAdvancedFeatures':
-                    $this->fileToStore['relevant'] = ['do', 'undo'];
-                    if (isset($_REQUEST['dbs'])) {
-                        $_SESSION['a']['dbs'] = $_REQUEST['dbs'];
-                        unset($_SESSION['a']['definerToModify']);
-                        unset($_SESSION['a']['definerToBe']);
-                        unset($_SESSION['a']['afType']);
-                    }
-                    if (isset($_SESSION['a']['dbs'])) {
-                        $this->tabs = 3;
-                    }
-                    if (isset($_REQUEST['definerToModify'])) {
-                        $_SESSION['a']['definerToModify'] = $_REQUEST['definerToModify'];
-                        unset($_SESSION['a']['definerToBe']);
-                        unset($_SESSION['a']['afType']);
-                    }
-                    if (isset($_SESSION['a']['definerToModify'])) {
-                        $this->tabs = 4;
-                    }
-                    if (isset($_REQUEST['definerToBe'])) {
-                        $this->tabs                   = 4;
-                        $_SESSION['a']['definerToBe'] = $_REQUEST['definerToBe'];
-                        unset($_SESSION['a']['afType']);
-                    }
-                    if (isset($_SESSION['a']['definerToBe'])) {
-                        $this->tabs = 5;
-                    }
-                    if (isset($_REQUEST['afType'])) {
-                        $_SESSION['a']['afType'] = implode('|', $_REQUEST['afType']);
-                    }
-                    if (isset($_SESSION['a']['afType'])) {
-                        $this->tabs = 6;
-                    }
+                    $this->configDefaultsForModifyDefiner();
                     break;
             }
         }
         if (isset($_SESSION['a']['definerToModify'])) {
             $this->definer['oldDefinerPlain']  = $_SESSION['a']['definerToModify'];
-            $this->definer['oldDefinerSql']    = '`'
-                . str_replace('@', '`@`', $_SESSION['a']['definerToModify'])
+            $this->definer['oldDefinerSql']    = '`' . str_replace('@', '`@`', $_SESSION['a']['definerToModify'])
                 . '`';
-            $this->definer['oldDefinerQuoted'] = '\''
-                . str_replace('@', '\'@\'', $_SESSION['a']['definerToModify'])
+            $this->definer['oldDefinerQuoted'] = '\'' . str_replace('@', '\'@\'', $_SESSION['a']['definerToModify'])
                 . '\'';
         }
         if (isset($_SESSION['a']['definerToBe'])) {
-            $this->definer['newDefinerSql'] = '`'
-                . str_replace('@', '`@`', $_SESSION['a']['definerToBe'])
-                . '`';
+            $this->definer['newDefinerSql'] = '`' . str_replace('@', '`@`', $_SESSION['a']['definerToBe']) . '`';
         }
     }
 
-    private function closeFile($fileKind)
+    final private function configDefaultsForListingDefiner()
     {
-        fclose($this->fileToStore[$fileKind]);
+        $this->fileToStore['relevant'] = 'info';
+        if (isset($_REQUEST['dbs'])) {
+            $_SESSION['a']['dbs'] = $_REQUEST['dbs'];
+            if (isset($_SESSION['a']['definerToModify'])) {
+                unset($_SESSION['a']['definerToModify']);
+            }
+            if (isset($_SESSION['a']['definerToBe'])) {
+                unset($_SESSION['a']['definerToBe']);
+            }
+            if (isset($_SESSION['a']['afType'])) {
+                unset($_SESSION['a']['afType']);
+            }
+        }
+        if (isset($_SESSION['a']['dbs'])) {
+            $this->tabs = 3;
+        }
+        if (isset($_REQUEST['definerToModify'])) {
+            $_SESSION['a']['definerToModify'] = $_REQUEST['definerToModify'];
+            $_SESSION['a']['definerToBe']     = $_REQUEST['definerToModify'];
+            if (isset($_SESSION['a']['afType'])) {
+                unset($_SESSION['a']['afType']);
+            }
+        }
+        if (isset($_SESSION['a']['definerToModify'])) {
+            $this->tabs = 4;
+        }
+        if (isset($_REQUEST['afType'])) {
+            $_SESSION['a']['afType'] = implode('|', $_REQUEST['afType']);
+        }
+        if (isset($_SESSION['a']['afType'])) {
+            $this->tabs = 5;
+        }
     }
 
-    final protected function connectToMySql()
+    final private function configDefaultsForModifyDefiner()
+    {
+        $this->fileToStore['relevant'] = ['do', 'undo'];
+        if (isset($_REQUEST['dbs'])) {
+            $_SESSION['a']['dbs'] = $_REQUEST['dbs'];
+            unset($_SESSION['a']['definerToModify']);
+            unset($_SESSION['a']['definerToBe']);
+            unset($_SESSION['a']['afType']);
+        }
+        if (isset($_SESSION['a']['dbs'])) {
+            $this->tabs = 3;
+        }
+        if (isset($_REQUEST['definerToModify'])) {
+            $_SESSION['a']['definerToModify'] = $_REQUEST['definerToModify'];
+            unset($_SESSION['a']['definerToBe']);
+            unset($_SESSION['a']['afType']);
+        }
+        if (isset($_SESSION['a']['definerToModify'])) {
+            $this->tabs = 4;
+        }
+        if (isset($_REQUEST['definerToBe'])) {
+            $this->tabs                   = 4;
+            $_SESSION['a']['definerToBe'] = $_REQUEST['definerToBe'];
+            unset($_SESSION['a']['afType']);
+        }
+        if (isset($_SESSION['a']['definerToBe'])) {
+            $this->tabs = 5;
+        }
+        if (isset($_REQUEST['afType'])) {
+            $_SESSION['a']['afType'] = implode('|', $_REQUEST['afType']);
+        }
+        if (isset($_SESSION['a']['afType'])) {
+            $this->tabs = 6;
+        }
+    }
+
+    protected function connectToMySql()
     {
         $cfg = $this->configuredMySqlServers();
         if (is_null($this->mySQLconfig)) {
@@ -775,13 +776,6 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
         }
     }
 
-    private function createFile($fileKind, $fileNameTermination)
-    {
-        $resultsDir                   = $this->configuredFolderForResults();
-        $fileName                     = $resultsDir . date('Y-m-d--H-i-s') . '__' . $fileNameTermination . '.sql';
-        $this->fileToStore[$fileKind] = fopen($fileName, 'w');
-    }
-
     private function getInterface()
     {
         $sReturn   = [];
@@ -790,13 +784,13 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
             . '<head>'
             . '<meta charset="utf-8" />'
             . '<meta name="viewport" content="width=device-width" />'
-            . '<title>' . $this->applicationFlags['Name'] . '</title>'
+            . '<title>' . $this->applicationFlags['name'] . '</title>'
             . $this->setCssFile('css/main.css')
             . $this->setJavascriptFile('js/tabber.min.js')
             . '</head>'
             . '<body>'
             . $this->setJavascriptContent('document.write(\'<style type="text/css">.tabber{display:none;}</style>\');')
-            . '<h1>' . $this->applicationFlags['Name'] . '</h1>'
+            . '<h1>' . $this->applicationFlags['name'] . '</h1>'
             . $this->setHeaderLanguages()
             . '<div class="tabber" id="tab">';
         $this->configDefaults();
@@ -896,7 +890,10 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
                     if (is_array($this->fileToStore['relevant'])) {
                         foreach ($this->fileToStore['relevant'] as $value) {
                             $this->createFile($value, $value);
-                            $this->setFileHeader($value);
+                            $this->setFileHeader($value, [
+                                'MySQL_configuration'   => $this->mySQLconfig,
+                                'MySQL_connection_info' => $this->mySQLconnection->server_info
+                            ]);
                         }
                     } else {
                         $this->createFile($this->fileToStore['relevant'], $this->fileToStore['relevant']);
@@ -1172,7 +1169,7 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
         }
     }
 
-    final protected function runQuery($sQuery, $sReturnType = null, $prefixKey = null)
+    protected function runQuery($sQuery, $sReturnType = null, $prefixKey = null)
     {
         $this->connectToMySql();
         if (is_null($this->mySQLconnection)) {
@@ -1288,121 +1285,6 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
         }
     }
 
-    private function setFileContent($features)
-    {
-        if (is_array($features['FileKind'])) {
-            foreach ($features['FileKind'] as $value) {
-                if (isset($features['Explanation'])) {
-                    fwrite($this->fileToStore[$value], '-- ' . $features['Explanation'] . PHP_EOL);
-                }
-                if (isset($features['Query'])) {
-                    fwrite($this->fileToStore[$value], $features['Query'] . PHP_EOL);
-                }
-                if (isset($features['Explanation'])) {
-                    fwrite($this->fileToStore[$value], '-- ' . PHP_EOL . PHP_EOL);
-                }
-            }
-        } else {
-            if (isset($features['Explanation'])) {
-                fwrite($this->fileToStore[$features['FileKind']], '-- ' . $features['Explanation'] . PHP_EOL);
-            }
-            if (isset($features['Query'])) {
-                fwrite($this->fileToStore[$features['FileKind']], $features['Query'] . PHP_EOL);
-            }
-            if (isset($features['Explanation'])) {
-                fwrite($this->fileToStore[$features['FileKind']], '-- ' . PHP_EOL . PHP_EOL);
-            }
-        }
-    }
-
-    private function setFileFooter($fileKind)
-    {
-        $sLineToWrite = [
-            '',
-            '',
-            '/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;',
-            '/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;',
-            '/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;',
-            '/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;',
-            '/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;',
-            '/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;',
-            '/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;',
-            '',
-            '-- File completed at                   ' . date('Y-m-d H:i:s'),
-        ];
-        foreach ($sLineToWrite as $value) {
-            fwrite($this->fileToStore[$fileKind], $value . PHP_EOL);
-        }
-    }
-
-    private function setFileHeader($fileKind)
-    {
-        $architectureType = [
-            'AMD64' => 'x64 (64 bit)',
-            'i386'  => 'x86 (32 bit)',
-        ];
-        if (in_array(php_uname('m'), array_keys($architectureType))) {
-            $serverMachineType = $architectureType[php_uname('m')];
-        } else {
-            $serverMachineType = php_uname('m');
-        }
-        $sLineToWrite = [
-            '-- File started at                     ' . date('Y-m-d H:i:s'),
-            '',
-            '-- Traceability info is displayed below --',
-            '--',
-            '-- OS Ip                               ' . $_SERVER['SERVER_ADDR'],
-            '-- OS Name                             ' . php_uname('s'),
-            '-- OS Host                             ' . php_uname('n'),
-            '-- OS Release                          ' . php_uname('r'),
-            '-- OS Version                          ' . php_uname('v'),
-            '-- OS Machine Type (from PHP)          ' . $serverMachineType,
-            '-- PHP version used                    ' . phpversion(),
-            '-- Zend engine version used            ' . zend_version(),
-            '-- Web server used                     ' . $_SERVER['SERVER_SOFTWARE'],
-            '-- Client IP direct                    ' . $_SERVER['REMOTE_ADDR'],
-            '-- Client Browser Agent                ' . $_SERVER['HTTP_USER_AGENT'],
-            '--',
-            '',
-            '',
-            '-- MySQL info is displayed below (version is very important for compatibility reasons) --',
-            '--',
-            '-- MySQL host                          ' . $this->mySQLconfig['host'],
-            '-- MySQL port                          ' . $this->mySQLconfig['port'],
-            '-- MySQL username                      ' . $this->mySQLconfig['user'],
-            '-- MySQL server version                ' . $this->mySQLconnection->server_info,
-            '--',
-            '',
-            '',
-            '-- Application choices made to generate this file --',
-            '--',
-            '-- Action chose                        ' . $_SESSION['a']['actionChoosed'],
-            '-- MySQL server # (from stored config.)' . $_SESSION['a']['serverChoosed'],
-            '-- MySQL databases chose               ' . implode(', ', $_SESSION['a']['dbs']),
-            '-- Definer to modify from              ' . $_SESSION['a']['definerToModify'],
-            '-- Definer to modify into              ' . $_SESSION['a']['definerToBe'],
-            '-- Advanced features to apply to       ' . str_replace('|', ', ', $_SESSION['a']['afType']),
-            '--',
-            '',
-            '',
-            '/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;',
-            '/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;',
-            '/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;',
-            '/*!40101 SET NAMES utf8 */;',
-            '/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;',
-            '/*!40103 SET TIME_ZONE=\'+00:00\' */;',
-            '/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;',
-            '/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;',
-            '/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE=\'NO_AUTO_VALUE_ON_ZERO\' */;',
-            '/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;',
-            '',
-            '',
-        ];
-        foreach ($sLineToWrite as $value) {
-            fwrite($this->fileToStore[$fileKind], $value . PHP_EOL);
-        }
-    }
-
     private function setHeaderLanguages()
     {
         $sReturn = [];
@@ -1429,7 +1311,7 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
      */
     final protected function storedQuery($label, $given_parameters = null)
     {
-        $sReturn = $this->setRightQuery($label, $given_parameters);
+        $sReturn = $this->applicationFlags['query_class']->setRightQuery($label, $given_parameters);
         if ($sReturn === false) {
             echo $this->setFeedback(0, _('i18n_Feedback_Error'), sprintf(_('i18n_Feedback_UndefinedQuery'), $label));
         }

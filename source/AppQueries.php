@@ -33,7 +33,7 @@ namespace danielgp\nis2mysql;
  *
  * @author Popiniuc Daniel-Gheorghe
  */
-class AppQueries extends UserConfiguration
+class AppQueries
 {
 
     private function sAssesmentListOfDefiner($parameters)
@@ -224,7 +224,7 @@ class AppQueries extends UserConfiguration
         return 'USE `' . $parameters['Database'] . '`;';
     }
 
-    public function setRightQuery($label, $givenParameters = null)
+    protected function setRightQuery($label, $givenParameters = null)
     {
         $predefinedFunctions = [
             'AssesmentListOfDefiner'            => $this->sAssesmentListOfDefiner($givenParameters),

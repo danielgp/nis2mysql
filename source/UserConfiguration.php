@@ -33,7 +33,7 @@ namespace danielgp\nis2mysql;
  *
  * @author E303778
  */
-class UserConfiguration
+trait UserConfiguration
 {
 
     protected function configuredDefaultLanguage()
