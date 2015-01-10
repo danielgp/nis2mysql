@@ -28,6 +28,21 @@ msgstr "Error"
 msgid "i18n_Feedback_MultipleSelectionAdvise"
 msgstr "For multiple choices hold down the Ctrl key"
 
+msgid "i18n_Feedback_MySQL_DisplayedOnly"
+msgstr "The query %s is desired to be displayed but not executed (%s)"
+
+msgid "i18n_Feedback_MySQL_Error"
+msgstr "There was an error running the query %s on host: %s, port: %s as username: %s, feedback from server is: %s"
+
+msgid "i18n_Feedback_MySQL_Executed"
+msgstr "The query %s has been executed (%s, %d record(s) resulted)"
+
+msgid "i18n_Feedback_MySQL_ToBeExecuted"
+msgstr "The query %s is desired to be executed (%s)"
+
+msgid "i18n_Feedback_RunImpossible"
+msgstr "The MySQL cannot run given query (%s) due to missing MySQL conection! Please adjust your connection parameters (host: %s, port: %s, username: %s, database: %s) and try again..."
+
 msgid "i18n_Feedback_UndefinedAction"
 msgstr "Action not defined..."
 

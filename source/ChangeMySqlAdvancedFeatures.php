@@ -34,7 +34,7 @@ namespace danielgp\nis2mysql;
  * @author Daniel-Gheorghe Popiniuc <daniel.popiniuc@honeywell.com>
  * @version 1.0.20140922
  */
-class ChangeMySqlAdvancedFeatures extends ResultFile
+class ChangeMySqlAdvancedFeatures extends MySQLactions
 {
 
     use \danielgp\common_lib\CommonCode;
@@ -43,11 +43,8 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
 
     private $applicationFlags;
     private $actions;
-    private $definer           = null;
-    private $tabs              = 1;
-    protected $mySQLconfig     = null;
-    protected $mySQLconnection = null;
-    protected $queueDetails    = '';
+    private $definer = null;
+    private $tabs    = 1;
 
     /**
      * Provides basic checking of requried parameters and initiates LDAP attributes
@@ -57,6 +54,7 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
      */
     public function __construct()
     {
+        parent::__construct();
         $this->applicationFlags = [
             'available_languages' => [
                 'en_US' => 'EN',
@@ -64,7 +62,6 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
             ],
             'default_language'    => $this->configuredDefaultLanguage(),
             'name'                => 'Normalize MySQL internal structures',
-            'query_class'         => new AppQueries()
         ];
         $this->handleLocalizationNIS();
         $this->actions          = [
@@ -78,7 +75,7 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
     {
         $sReturn            = [];
         $this->queueDetails = '';
-        $this->setFeedbackNoMySqlConnection('events');
+        $this->connectOrSetFeedbackIfNoMySqlConnection('events');
         $sQuery             = $this->storedQuery('ListOfEventsDetails', [
             'dbs'             => $_SESSION['a']['dbs'],
             'definerToModify' => $_SESSION['a']['definerToModify'],
@@ -125,9 +122,7 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
                                 $infoLine[]          = $value[$value2];
                                 $infoDisplayed[$key] = $value[$value2];
                             }
-                            $sReturn[] = '<p>' . $this->getTimestamp()
-                                . json_encode($infoDisplayed, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT)
-                                . '</p>';
+                            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
                             $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
                             $this->setFileContent([
                                 'FileKind' => $this->fileToStore['relevant'],
@@ -196,7 +191,7 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
     {
         $sReturn              = [];
         $this->queueDetails   = '';
-        $this->setFeedbackNoMySqlConnection('stored routines');
+        $this->connectOrSetFeedbackIfNoMySqlConnection('stored routines');
         $sQuery               = $this->storedQuery('ListOfStoredRoutinesDetails', [
             'dbs'             => $_SESSION['a']['dbs'],
             'definerToModify' => $_SESSION['a']['definerToModify'],
@@ -240,9 +235,7 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
                                 $infoLine[]          = $value[$value2];
                                 $infoDisplayed[$key] = $value[$value2];
                             }
-                            $sReturn[] = '<p>' . $this->getTimestamp()
-                                . json_encode($infoDisplayed, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT)
-                                . '</p>';
+                            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
                             $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
                             $this->setFileContent([
                                 'FileKind' => $this->fileToStore['relevant'],
@@ -342,7 +335,7 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
     {
         $sReturn            = [];
         $this->queueDetails = '';
-        $this->setFeedbackNoMySqlConnection('triggers');
+        $this->connectOrSetFeedbackIfNoMySqlConnection('triggers');
         $sQuery             = $this->storedQuery('ListOfTriggersDetails', [
             'dbs'             => $_SESSION['a']['dbs'],
             'definerToModify' => $_SESSION['a']['definerToModify'],
@@ -384,8 +377,7 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
                                 $infoLine[]          = $value[$value2];
                                 $infoDisplayed[$key] = $value[$value2];
                             }
-                            $sReturn[] = '<p>' . $this->getTimestamp()
-                                . json_encode($infoDisplayed, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT) . '</p>';
+                            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
                             $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
                             $this->setFileContent([
                                 'FileKind' => $this->fileToStore['relevant'],
@@ -509,7 +501,7 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
     final private function actOnAdvancedMySqlFeatureViews()
     {
         $sReturn            = [];
-        $this->setFeedbackNoMySqlConnection('views');
+        $this->connectOrSetFeedbackIfNoMySqlConnection('views');
         $this->queueDetails = '';
         $sQuery             = $this->storedQuery('ListOfViewsDetails', [
             'dbs'             => $_SESSION['a']['dbs'],
@@ -549,8 +541,7 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
                                 $infoLine[]          = $value[$value2];
                                 $infoDisplayed[$key] = $value[$value2];
                             }
-                            $sReturn[] = '<p>' . $this->getTimestamp()
-                                . json_encode($infoDisplayed, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT) . '</p>';
+                            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
                             $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
                             $this->setFileContent([
                                 'FileKind' => $this->fileToStore['relevant'],
@@ -749,30 +740,6 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
         }
         if (isset($_SESSION['a']['afType'])) {
             $this->tabs = 6;
-        }
-    }
-
-    protected function connectToMySql()
-    {
-        $cfg = $this->configuredMySqlServers();
-        if (is_null($this->mySQLconfig)) {
-            $this->mySQLconfig = [
-                'host'     => $cfg[$_SESSION['a']['serverChoosed']]['host'],
-                'port'     => $cfg[$_SESSION['a']['serverChoosed']]['port'],
-                'user'     => $cfg[$_SESSION['a']['serverChoosed']]['user'],
-                'password' => $cfg[$_SESSION['a']['serverChoosed']]['password'],
-                'database' => $cfg[$_SESSION['a']['serverChoosed']]['database'],
-            ];
-        }
-        if (is_null($this->mySQLconnection)) {
-            extract($this->mySQLconfig);
-            $this->mySQLconnection = new \mysqli($host, $user, $password, $database, $port);
-            if ($this->mySQLconnection->connect_error) {
-                $erNo  = $this->mySQLconnection->connect_errno;
-                $erMsg = $this->mySQLconnection->connect_error;
-                echo $this->getTimestamp()
-                . sprintf(_('i18n_Feedback_ConnectionError'), $erNo, $erMsg, $host, $port, $user, $database);
-            }
         }
     }
 
@@ -1169,122 +1136,6 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
         }
     }
 
-    protected function runQuery($sQuery, $sReturnType = null, $prefixKey = null)
-    {
-        $this->connectToMySql();
-        if (is_null($this->mySQLconnection)) {
-            $this->queueDetails .= '<p style="color:red;">' . $this->getTimestamp()
-                . 'As there is no connection to MySQL server, I could not run given query '
-                . '(`' . htmlentities($sQuery) . '` on `' . __FUNCTION__ . '`)...</p>';
-            return null;
-        }
-        switch ($sReturnType) {
-            case 'noRunJustDisplay':
-                $this->queueDetails .= '<p style="color:grey;">' . $this->getTimestamp()
-                    . 'The query <i>' . htmlentities($sQuery) . '</i> is desired to be displayed but not executed '
-                    . '($sReturnType = "' . $sReturnType . '")</p>';
-                return '';
-                break;
-            case 'runWithDisplayFirst':
-                $this->queueDetails .= '<p style="color:grey;">' . $this->getTimestamp()
-                    . 'The query <i>' . htmlentities($sQuery) . '</i> is desired to be executed '
-                    . 'w. $sReturnType = "' . $sReturnType . '"</p>';
-                break;
-        }
-        $result = $this->mySQLconnection->query($sQuery);
-        if ($result) {
-            if (is_object($result)) {
-                $iNoOfRows = $result->num_rows;
-                if (($sReturnType != 'runWithDisplayFirst') && (strpos($sReturnType, 'WithDisplay') !== false)) {
-                    $this->queueDetails .= '<p style="color:green;">' . $this->getTimestamp()
-                        . 'The query <i>' . htmlentities($sQuery) . '</i> has been executed '
-                        . 'w. $sReturnType = "' . $sReturnType . '" (' . $iNoOfRows . ' record(s) resulted)</p>';
-                }
-            }
-            switch ($sReturnType) {
-                case 'array_pairs_key_valueWithDisplay':
-                case 'array_pairs_key_value':
-                    if ($iNoOfRows == 1) {
-                        $array2return = null;
-                        for ($counter = 0; $counter < $iNoOfRows; $counter++) {
-                            $line           = $result->fetch_row();
-                            $finfo          = $result->fetch_fields();
-                            $column_counter = 0;
-                            foreach ($finfo as $value) {
-                                $key                = $value->name;
-                                $array2return[$key] = $line[$column_counter];
-                                $column_counter += 1;
-                            }
-                        }
-                        $result->close();
-                        return $array2return;
-                    } else {
-                        $result->close();
-                        return false;
-                    }
-                    break;
-                case 'fullArray3WithDisplay':
-                case 'fullArray3':
-                    if ($iNoOfRows == 0) {
-                        if (is_null($prefixKey)) {
-                            $aReturn = null;
-                        } else {
-                            $aReturn[$prefixKey] = null;
-                        }
-                    } else {
-                        $counter2 = 0;
-                        for ($counter = 0; $counter < $iNoOfRows; $counter++) {
-                            $line           = $result->fetch_row();
-                            $finfo          = $result->fetch_fields();
-                            $column_counter = 0;
-                            foreach ($finfo as $value) {
-                                $key = $value->name;
-                                if (is_null($prefixKey)) {
-                                    $aReturn[$counter2][$key] = $line[$column_counter];
-                                } else {
-                                    $aReturn[$prefixKey][$counter2][$key] = $line[$column_counter];
-                                }
-                                $column_counter += 1;
-                            }
-                            $counter2 += 1;
-                        }
-                    }
-                    break;
-                case 'runWithDisplayFirst':
-                    break;
-                case 'valueWithDisplay':
-                case 'value':
-                    if ($iNoOfRows == 1) {
-                        $aReturn = $result->fetch_row();
-                    } else {
-                        $result->close();
-                        return false;
-                    }
-                    break;
-            }
-            if (is_object($result)) {
-                $result->close();
-            }
-            return $aReturn;
-        } else {
-            $this->queueDetails .= '<p style="color:red;">' . $this->getTimestamp()
-                . 'There was an error running the query ' . htmlentities($sQuery) . ' as `'
-                . $this->mySQLconfig['user'] . '` on `' . $this->mySQLconfig['user']
-                . '` (<b>' . $this->mySQLconnection->error . '</b>)</p>';
-        }
-    }
-
-    protected function setFeedbackNoMySqlConnection($thingsToAnalyze)
-    {
-        $this->connectToMySql();
-        if (is_null($this->mySQLconnection)) {
-            extract($this->mySQLconfig);
-            echo '<p style="color:red;">' . $this->getTimestamp()
-            . sprintf(_('i18n_Feedback_AnalyzeImpossible'), $thingsToAnalyze, $host, $port, $user, $database)
-            . '</p>';
-        }
-    }
-
     private function setHeaderLanguages()
     {
         $sReturn = [];
@@ -1300,21 +1151,5 @@ class ChangeMySqlAdvancedFeatures extends ResultFile
         return '<span class="language_box">'
             . implode(' | ', $sReturn)
             . '</span>';
-    }
-
-    /**
-     * Place for all MySQL queries used within current class
-     *
-     * @param string $label
-     * @param array $given_parameters
-     * @return string
-     */
-    final protected function storedQuery($label, $given_parameters = null)
-    {
-        $sReturn = $this->applicationFlags['query_class']->setRightQuery($label, $given_parameters);
-        if ($sReturn === false) {
-            echo $this->setFeedback(0, _('i18n_Feedback_Error'), sprintf(_('i18n_Feedback_UndefinedQuery'), $label));
-        }
-        return $sReturn;
     }
 }

@@ -224,7 +224,7 @@ class AppQueries
         return 'USE `' . $parameters['Database'] . '`;';
     }
 
-    protected function setRightQuery($label, $givenParameters = null)
+    public function setRightQuery($label, $givenParameters = null)
     {
         $predefinedFunctions = [
             'AssesmentListOfDefiner'            => $this->sAssesmentListOfDefiner($givenParameters),

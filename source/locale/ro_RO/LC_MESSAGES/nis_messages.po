@@ -28,6 +28,21 @@ msgstr "Eroare"
 msgid "i18n_Feedback_MultipleSelectionAdvise"
 msgstr "Pentru selecţie multiplă ţineţi apăsată tasta Ctrl"
 
+msgid "i18n_Feedback_MySQL_DisplayedOnly"
+msgstr "Interogarea %s se doreşte a fi afişată dar nu şi executată (%s)"
+
+msgid "i18n_Feedback_MySQL_Error"
+msgstr "A intervenit o eroare în executarea interogării %s pe serverul: %s, portul: %s ca şi utilizator: %s, mesajul de la server fiind: %s"
+
+msgid "i18n_Feedback_MySQL_Executed"
+msgstr "Interogarea %s a fost executată (%s, rezultând %d înregistrări)"
+
+msgid "i18n_Feedback_MySQL_ToBeExecuted"
+msgstr "Interogarea %s se doreşte a fi executată (%s)"
+
+msgid "i18n_Feedback_RunImpossible"
+msgstr "Serverul MySQL nu poate executa interogarea (%s) datorită conexiunii ne-realizate! Ajustati parametrii de conectare (nume server = %s, port: %s, nume utilizator: %s, baza de date: %s) si încercați din nou..."
+
 msgid "i18n_Feedback_UndefinedAction"
 msgstr "Acţiune nedefinită..."
 

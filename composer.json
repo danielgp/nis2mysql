@@ -24,6 +24,7 @@
         "classmap": [
             "source/AppQueries.php",
             "source/ChangeMySqlAdvancedFeatures.php",
+            "source/MySQLactions.php",
             "source/ResultFile.php",
             "source/UserConfiguration.php"
         ]

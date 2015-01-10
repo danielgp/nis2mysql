@@ -55,7 +55,7 @@ trait UserConfiguration
     {
         return [
             [
-                'database' => 'mysql',
+                'db'       => 'mysql',
                 'host'     => 'localhost',
                 'password' => '',
                 'port'     => 3306,
