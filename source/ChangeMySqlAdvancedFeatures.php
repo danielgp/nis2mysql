@@ -67,7 +67,10 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
             'Name'                => 'Normalize MySQL internal structures',
         ];
         $this->handleLocalizationNIS();
-        $this->config();
+        $this->actions          = [
+            'listAdvancedFeatureByChosenDefiner' => _('i18n_TabAction_OptionList'),
+            'modifyDefinerOfAdvancedFeatures'    => _('i18n_TabAction_OptionModify'),
+        ];
         echo $this->getInterface();
     }
 
@@ -626,64 +629,6 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
         return implode('', $sReturn);
     }
 
-    private function config()
-    {
-        $this->actions = [
-            'listAdvancedFeatureByChosenDefiner' => [
-                'label' => _('i18n_TabAction_OptionList'),
-                'steps' => [
-                    2 => [
-                        'name'     => _('i18n_TabAssesVariations'),
-                        'function' => 'getStepAssessVariations',
-                    ],
-                    3 => [
-                        'name'     => _('i18n_TabVariations'),
-                        'function' => 'getStepVariationsToChooseFrom',
-                    ],
-                    4 => [
-                        'name'     => _('i18n_TabAdvancedFeature'),
-                        'function' => 'getStepAdvancedFeatureToApplyTo'
-                    ],
-                    5 => [
-                        'name'     => 'Action details',
-                        'function' => 'getStepActionDetails'
-                    ],
-                ],
-            ],
-            'modifyDefinerOfAdvancedFeatures'    => [
-                'label' => _('i18n_TabAction_OptionModify'),
-                'steps' => [
-                    2 => [
-                        'name'     => _('i18n_TabAssesVariations'),
-                        'function' => 'getStepAssessVariations',
-                    ],
-                    3 => [
-                        'name'     => _('i18n_TabVariations'),
-                        'function' => 'getStepVariationsToChooseFrom',
-                    ],
-                    4 => [
-                        'name'     => 'Provide new definer',
-                        'function' => 'getStepDefineNewValue',
-                    ],
-                    5 => [
-                        'name'     => _('i18n_TabAdvancedFeature'),
-                        'function' => 'getStepAdvancedFeatureToApplyTo'
-                    ],
-                    6 => [
-                        'name'     => 'Action details',
-                        'function' => 'getStepActionDetails'
-                    ],
-                ],
-            ],
-            /* 'modifySqlMode'                      => [
-              'label' => 'modify stored SQL_MODE',
-              'steps' => [
-              2 => 'Assess the variations',
-              ],
-              ], */
-        ];
-    }
-
     final private function configDefaults()
     {
         if (isset($_REQUEST['serverChoosed'])) {
@@ -808,7 +753,7 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
 
     final protected function connectToMySql()
     {
-        $cfg = $this->mySqlServers();
+        $cfg = $this->configuredMySqlServers();
         if (is_null($this->mySQLconfig)) {
             $this->mySQLconfig = [
                 'host'     => $cfg[$_SESSION['a']['serverChoosed']]['host'],
@@ -860,12 +805,9 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
         }
         $sReturn[] = '<div class="tabbertab" id="tab0" title="' . _('i18n_TabDebug') . '">'
             . (isset($_REQUEST) ? 'REQUEST = ' . $this->setArray2json($_REQUEST) : '')
-            . '<hr/>'
-            . (isset($_SESSION) ? 'SESSION = ' . $this->setArray2json($_SESSION) : '')
-            . '<hr/>'
-            . 'actions SESSION counted = ' . (isset($_SESSION['a']) ? count($_SESSION['a']) : 0)
-            . '<br/>'
-            . 'total SESSION counted = ' . count($_SESSION)
+            . '<hr/>' . (isset($_SESSION) ? 'SESSION = ' . $this->setArray2json($_SESSION) : '')
+            . '<hr/>' . 'actions SESSION counted = ' . (isset($_SESSION['a']) ? count($_SESSION['a']) : 0)
+            . '<br/>' . 'total SESSION counted = ' . count($_SESSION)
             . '</div><!-- tab0 end -->'
             . '</div><!-- tabber end -->'
             . '</body>'
@@ -883,9 +825,33 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
                 $sReturn[] = $this->getStepAction(_('i18n_TabAction'));
                 break;
             default:
-                $f         = [$this, $this->actions[$_SESSION['a']['actionChoosed']]['steps'][$stepNo]['function']];
-                $prm       = [$this->actions[$_SESSION['a']['actionChoosed']]['steps'][$stepNo]['name']];
-                $sReturn[] = call_user_func_array($f, $prm);
+                $nextSteps = null;
+                switch ($_SESSION['a']['actionChoosed']) {
+                    case 'listAdvancedFeatureByChosenDefiner':
+                        $nextSteps = [
+                            2 => $this->getStepAssessVariations(_('i18n_TabAssesVariations')),
+                            3 => $this->getStepVariationsToChooseFrom(_('i18n_TabVariations')),
+                            4 => $this->getStepAdvancedFeatureToApplyTo(_('i18n_TabAdvancedFeature')),
+                            5 => $this->getStepActionDetails('Action details'),
+                        ];
+                        break;
+                    case 'modifyDefinerOfAdvancedFeatures':
+                        $nextSteps = [
+                            2 => $this->getStepAssessVariations(_('i18n_TabAssesVariations')),
+                            3 => $this->getStepVariationsToChooseFrom(_('i18n_TabVariations')),
+                            4 => $this->getStepDefineNewValue('Provide new definer'),
+                            5 => $this->getStepAdvancedFeatureToApplyTo(_('i18n_TabAdvancedFeature')),
+                            6 => $this->getStepActionDetails('Action details'),
+                        ];
+                        break;
+                    default:
+                        break;
+                }
+                if (is_null($nextSteps)) {
+                    $sReturn[] = '';
+                } else {
+                    $sReturn[] = $nextSteps[$stepNo];
+                }
                 break;
         }
         return implode('', $sReturn);
@@ -904,10 +870,9 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
         foreach ($this->actions as $key => $value) {
             $sReturn[] = '<input type="radio" name="actionChoosed" value="'
                 . $key . '" id="' . $key . '"'
-                . ($valueSelected == $key ? ' checked' : '')
-                . ' />'
+                . ($valueSelected == $key ? ' checked' : '') . ' />'
                 . '<label for="' . $key . '" style="width:auto;">'
-                . $value['label'] . '</label><br/>';
+                . $value . '</label><br/>';
         }
         $sReturn[] = '<input type="submit" style="display:block;" '
             . 'value="' . _('i18n_TabAction_IchoseProceed') . '" />'
@@ -1027,7 +992,7 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
 
     private function getStepAssessVariations($stepTitle)
     {
-        $cfg     = $this->mySqlServers();
+        $cfg     = $this->configuredMySqlServers();
         $sReturn = [];
         switch ($_SESSION['a']['actionChoosed']) {
             case 'listAdvancedFeatureByChosenDefiner':
@@ -1115,7 +1080,7 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
 
     private function getStepServer($stepTitle)
     {
-        $cfg       = $this->mySqlServers();
+        $cfg       = $this->configuredMySqlServers();
         $sReturn   = [];
         $sReturn[] = '<p>' . _('i18n_TabServer_ChooseServerToConnectTo') . '</p>'
             . '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">';
@@ -1152,11 +1117,6 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
                     ]), 'fullArray3');
                 if (is_array($listOfDefiners)) {
                     asort($listOfDefiners);
-                }
-                if (isset($_SESSION['a']['definerToModify'])) {
-                    $choosenDefinerToModify = explode('|', $_SESSION['a']['definerToModify']);
-                } else {
-                    $choosenDefinerToModify = [];
                 }
                 if (is_null($listOfDefiners)) {
                     $sReturn[] = '<p style="color:red;">'
@@ -1452,8 +1412,7 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
             } else {
                 $sReturn[] = '<a href="?'
                     . (isset($_REQUEST) ? $this->setArray2String4Url('&amp;', $_REQUEST, ['lang']) . '&amp;' : '')
-                    . 'lang=' . $key
-                    . '">' . $value . '</a>';
+                    . 'lang=' . $key . '">' . $value . '</a>';
             }
         }
         return '<span class="language_box">'
@@ -1464,18 +1423,12 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
     /**
      * Place for all MySQL queries used within current class
      *
-     * @version 20080525
      * @param string $label
      * @param array $given_parameters
      * @return string
      */
     final protected function storedQuery($label, $given_parameters = null)
     {
-// redirection because of a reserved word
-        if ($label == 'use') {
-            $label = 'usee';
-        }
-// end of redirection
         $sReturn = $this->setRightQuery($label, $given_parameters);
         if ($sReturn === false) {
             echo $this->setFeedback(0, _('i18n_Feedback_Error'), sprintf(_('i18n_Feedback_UndefinedQuery'), $label));

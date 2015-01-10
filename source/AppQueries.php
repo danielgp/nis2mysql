@@ -84,8 +84,8 @@ class AppQueries extends UserConfiguration
 
     private function sDropStoredRoutine($parameters)
     {
-        return 'DROP ' . $value['ROUTINE_TYPE'] . ' '
-            . '`' . $value['ROUTINE_SCHEMA'] . '`.`' . $value['ROUTINE_NAME'] . '`;';
+        return 'DROP ' . $parameters['ROUTINE_TYPE'] . ' '
+            . '`' . $parameters['ROUTINE_SCHEMA'] . '`.`' . $parameters['ROUTINE_NAME'] . '`;';
     }
 
     private function sDropTrigger($parameters)
@@ -226,7 +226,6 @@ class AppQueries extends UserConfiguration
 
     public function setRightQuery($label, $givenParameters = null)
     {
-        $label               = 's' . $label;
         $predefinedFunctions = [
             'AssesmentListOfDefiner'            => $this->sAssesmentListOfDefiner($givenParameters),
             'AssesmentListOfDefinerByType'      => $this->sAssesmentListOfDefinerByType($givenParameters),
@@ -239,6 +238,7 @@ class AppQueries extends UserConfiguration
             'ListOfTablesFullDetails'           => $this->sListOfTablesFullDetails(),
             'ListOfTriggersDetails'             => $this->sListOfTriggersDetails($givenParameters),
             'ListOfUsersWithAssignedPrivileges' => $this->sListOfUsersWithAssignedPrivileges($givenParameters),
+            'ListOfViewsDetails'                => $this->sListOfViewsDetails($givenParameters),
             'LockTableWrite'                    => $this->sLockTableWrite($givenParameters),
             'ModifyEvent'                       => $this->sModifyEvent($givenParameters),
             'ModifyStoredRoutine'               => $this->sModifyStoredRoutine($givenParameters),
@@ -251,7 +251,7 @@ class AppQueries extends UserConfiguration
             'UnlockTables'                      => $this->sUnlockTables(),
             'UseDatabase'                       => $this->sUseDatabase($givenParameters),
         ];
-        if (in_arrray($label, array_keys($predefinedFunctions))) {
+        if (in_array($label, array_keys($predefinedFunctions))) {
             return $predefinedFunctions[$label];
         } else {
             echo '<hr/>Unknown query... (wanted was `' . $label . '`)<hr/>';

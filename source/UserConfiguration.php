@@ -51,7 +51,7 @@ class UserConfiguration
         return '|';
     }
 
-    protected function mySqlServers()
+    protected function configuredMySqlServers()
     {
         return [
             [
