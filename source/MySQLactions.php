@@ -220,4 +220,34 @@ class MySQLactions extends ResultFile
         }
         return $sReturn;
     }
+
+    protected function runQueryWithFeedback($listOfFields, $listOfEvents)
+    {
+        $sQuery = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
+        $this->setFileContent([
+            'FileKind' => $this->fileToStore['relevant'],
+            'Query'    => '-- "' . $sQuery . '"',
+        ]);
+        foreach ($listOfEvents as $value) {
+            $infoLine      = null;
+            $infoDisplayed = null;
+            foreach ($listOfFields as $key => $value2) {
+                $infoLine[]          = $value[$value2];
+                $infoDisplayed[$key] = $value[$value2];
+            }
+            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
+            $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
+            $this->setFileContent([
+                'FileKind' => $this->fileToStore['relevant'],
+                'Query'    => '-- "' . $sQuery . '"',
+            ]);
+        }
+        unset($infoDisplayed);
+        unset($infoLine);
+        $this->setFileContent([
+            'FileKind' => $this->fileToStore['relevant'],
+            'Query'    => '--',
+        ]);
+        return implode('', $sReturn);
+    }
 }

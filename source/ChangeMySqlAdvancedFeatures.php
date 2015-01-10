@@ -110,31 +110,32 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                             'Modified on'          => 'LAST_ALTERED',
                             'Last executed on'     => 'LAST_EXECUTED',
                         ];
-                        $sQuery       = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
-                        $this->setFileContent([
-                            'FileKind' => $this->fileToStore['relevant'],
-                            'Query'    => '-- "' . $sQuery . '"',
-                        ]);
-                        foreach ($listOfEvents as $value) {
-                            $infoLine      = null;
-                            $infoDisplayed = null;
-                            foreach ($listOfFields as $key => $value2) {
-                                $infoLine[]          = $value[$value2];
-                                $infoDisplayed[$key] = $value[$value2];
-                            }
-                            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
-                            $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
-                            $this->setFileContent([
-                                'FileKind' => $this->fileToStore['relevant'],
-                                'Query'    => '-- "' . $sQuery . '"',
-                            ]);
-                        }
-                        unset($infoDisplayed);
-                        unset($infoLine);
-                        $this->setFileContent([
-                            'FileKind' => $this->fileToStore['relevant'],
-                            'Query'    => '--',
-                        ]);
+                        $sReturn[]    = $this->runQueryWithFeedback($listOfFields, $listOfEvents);
+//                        $sQuery       = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
+//                        $this->setFileContent([
+//                            'FileKind' => $this->fileToStore['relevant'],
+//                            'Query'    => '-- "' . $sQuery . '"',
+//                        ]);
+//                        foreach ($listOfEvents as $value) {
+//                            $infoLine      = null;
+//                            $infoDisplayed = null;
+//                            foreach ($listOfFields as $key => $value2) {
+//                                $infoLine[]          = $value[$value2];
+//                                $infoDisplayed[$key] = $value[$value2];
+//                            }
+//                            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
+//                            $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
+//                            $this->setFileContent([
+//                                'FileKind' => $this->fileToStore['relevant'],
+//                                'Query'    => '-- "' . $sQuery . '"',
+//                            ]);
+//                        }
+//                        unset($infoDisplayed);
+//                        unset($infoLine);
+//                        $this->setFileContent([
+//                            'FileKind' => $this->fileToStore['relevant'],
+//                            'Query'    => '--',
+//                        ]);
                         break;
                     case 'modifyDefinerOfAdvancedFeatures':
                         foreach ($listOfEvents as $value) {
@@ -529,31 +530,32 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                             'Security Type' => 'SECURITY_TYPE',
                             'Is updatable'  => 'IS_UPDATABLE',
                         ];
-                        $sQuery       = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
-                        $this->setFileContent([
-                            'FileKind' => $this->fileToStore['relevant'],
-                            'Query'    => '-- "' . $sQuery . '"',
-                        ]);
-                        foreach ($listOfViews as $value) {
-                            $infoLine      = null;
-                            $infoDisplayed = null;
-                            foreach ($listOfFields as $key => $value2) {
-                                $infoLine[]          = $value[$value2];
-                                $infoDisplayed[$key] = $value[$value2];
-                            }
-                            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
-                            $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
-                            $this->setFileContent([
-                                'FileKind' => $this->fileToStore['relevant'],
-                                'Query'    => '-- "' . $sQuery . '"',
-                            ]);
-                        }
-                        unset($infoDisplayed);
-                        unset($infoLine);
-                        $this->setFileContent([
-                            'FileKind' => $this->fileToStore['relevant'],
-                            'Query'    => '--',
-                        ]);
+                        $sReturn[]    = $this->runQueryWithFeedback($listOfFields, $listOfViews);
+//                        $sQuery       = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
+//                        $this->setFileContent([
+//                            'FileKind' => $this->fileToStore['relevant'],
+//                            'Query'    => '-- "' . $sQuery . '"',
+//                        ]);
+//                        foreach ($listOfViews as $value) {
+//                            $infoLine      = null;
+//                            $infoDisplayed = null;
+//                            foreach ($listOfFields as $key => $value2) {
+//                                $infoLine[]          = $value[$value2];
+//                                $infoDisplayed[$key] = $value[$value2];
+//                            }
+//                            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
+//                            $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
+//                            $this->setFileContent([
+//                                'FileKind' => $this->fileToStore['relevant'],
+//                                'Query'    => '-- "' . $sQuery . '"',
+//                            ]);
+//                        }
+//                        unset($infoDisplayed);
+//                        unset($infoLine);
+//                        $this->setFileContent([
+//                            'FileKind' => $this->fileToStore['relevant'],
+//                            'Query'    => '--',
+//                        ]);
                         break;
                     case 'modifyDefinerOfAdvancedFeatures':
                         foreach ($listOfViews as $value) {

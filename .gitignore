@@ -1,4 +1,5 @@
 /nbproject/private/
+/source/UserConfiguration.php
 /source/private.config.inc.php
 *.sql
 /vendor/
