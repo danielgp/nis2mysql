@@ -143,7 +143,7 @@ class MySQLactions extends ResultFile
             }
             return $aReturn;
         } else {
-            $cfg = extract($this->mySQLconfig);
+            extract($this->mySQLconfig);
             $err = $this->mySQLconnection->error;
             $this->queueDetails .= '<p style="color:red;">' . $this->getTimestamp()
                 . sprintf(_('i18n_Feedback_MySQL_Error'), htmlentities($sQuery), $host, $port, $username, $err)
