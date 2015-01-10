@@ -114,17 +114,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                         break;
                     case 'modifyDefinerOfAdvancedFeatures':
                         foreach ($listOfEvents as $value) {
-                            $sQuery             = $this->storedQuery('SetSessionCharacterAndCollation', [
-                                'CHARACTER_SET_CLIENT' => $value['CHARACTER_SET_CLIENT'],
-                                'COLLATION_CONNECTION' => $value['COLLATION_CONNECTION'],
-                            ]);
-                            $this->setFileContent([
-                                'FileKind'    => $this->fileToStore['relevant'],
-                                'Explanation' => 'Set session charset and collation',
-                                'Query'       => $sQuery,
-                            ]);
-                            $this->runQuery($sQuery, 'runWithDisplayFirst');
-                            $sReturn[]          = $this->queueDetails;
+                            $sReturn[]          = $this->setMySQLsessionCharacterAndCollation($value);
                             $this->queueDetails = '';
                             $sQuery             = $this->storedQuery('ModifyView', [
                                 'newDefinerSql'   => $this->definer['oldDefinerSql'],
@@ -203,17 +193,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                         break;
                     case 'modifyDefinerOfAdvancedFeatures':
                         foreach ($listOfStoredRoutines as $value) {
-                            $sQuery             = $this->storedQuery('SetSessionCharacterAndCollation', [
-                                'CHARACTER_SET_CLIENT' => $value['CHARACTER_SET_CLIENT'],
-                                'COLLATION_CONNECTION' => $value['COLLATION_CONNECTION'],
-                            ]);
-                            $this->setFileContent([
-                                'FileKind'    => $this->fileToStore['relevant'],
-                                'Explanation' => 'Set session charset and collation',
-                                'Query'       => $sQuery,
-                            ]);
-                            $this->runQuery($sQuery, 'runWithDisplayFirst');
-                            $sReturn[]          = $this->queueDetails;
+                            $sReturn[]          = $this->setMySQLsessionCharacterAndCollation($value);
                             $this->queueDetails = '';
                             $sQuery             = $this->storedQuery('ShowCreateStoredRoutine', [
                                 'ROUTINE_TYPE'   => $value['ROUTINE_TYPE'],
@@ -336,17 +316,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                                 $this->queueDetails = '';
                                 $lastActiveSchema   = $value['TRIGGER_SCHEMA'];
                             }
-                            $sQuery                = $this->storedQuery('SetSessionCharacterAndCollation', [
-                                'CHARACTER_SET_CLIENT' => $value['CHARACTER_SET_CLIENT'],
-                                'COLLATION_CONNECTION' => $value['COLLATION_CONNECTION'],
-                            ]);
-                            $this->setFileContent([
-                                'FileKind'    => $this->fileToStore['relevant'],
-                                'Explanation' => 'Set session charset and collation',
-                                'Query'       => $sQuery,
-                            ]);
-                            $this->runQuery($sQuery, 'runWithDisplayFirst');
-                            $sReturn[]             = $this->queueDetails;
+                            $sReturn[]             = $this->setMySQLsessionCharacterAndCollation($value);
                             $this->queueDetails    = '';
                             $sQuery                = $this->storedQuery('ShowCreateTrigger', [
                                 'TRIGGER_NAME' => $value['TRIGGER_NAME']
@@ -477,17 +447,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                                 $this->queueDetails = '';
                                 $lastActiveSchema   = $value['TABLE_SCHEMA'];
                             }
-                            $sQuery             = $this->storedQuery('SetSessionCharacterAndCollation', [
-                                'CHARACTER_SET_CLIENT' => $value['CHARACTER_SET_CLIENT'],
-                                'COLLATION_CONNECTION' => $value['COLLATION_CONNECTION'],
-                            ]);
-                            $this->setFileContent([
-                                'FileKind'    => $this->fileToStore['relevant'],
-                                'Explanation' => 'Set session charset and collation',
-                                'Query'       => $sQuery,
-                            ]);
-                            $this->runQuery($sQuery, 'runWithDisplayFirst');
-                            $sReturn[]          = $this->queueDetails;
+                            $sReturn[]          = $this->setMySQLsessionCharacterAndCollation($value);
                             $this->queueDetails = '';
                             $sQuery             = $this->storedQuery('ModifyView', [
                                 'newDefinerSql'   => $this->definer['oldDefinerSql'],

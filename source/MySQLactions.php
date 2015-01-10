@@ -151,6 +151,51 @@ class MySQLactions extends ResultFile
         }
     }
 
+    protected function runQueryWithFeedback($listOfFields, $listOfEvents)
+    {
+        $sQuery = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
+        $this->setFileContent([
+            'FileKind' => $this->fileToStore['relevant'],
+            'Query'    => '-- "' . $sQuery . '"',
+        ]);
+        foreach ($listOfEvents as $value) {
+            $infoLine      = null;
+            $infoDisplayed = null;
+            foreach ($listOfFields as $key => $value2) {
+                $infoLine[]          = $value[$value2];
+                $infoDisplayed[$key] = $value[$value2];
+            }
+            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
+            $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
+            $this->setFileContent([
+                'FileKind' => $this->fileToStore['relevant'],
+                'Query'    => '-- "' . $sQuery . '"',
+            ]);
+        }
+        unset($infoDisplayed);
+        unset($infoLine);
+        $this->setFileContent([
+            'FileKind' => $this->fileToStore['relevant'],
+            'Query'    => '--',
+        ]);
+        return implode('', $sReturn);
+    }
+
+    protected function setMySQLsessionCharacterAndCollation($value)
+    {
+        $sQuery = $this->storedQuery('SetSessionCharacterAndCollation', [
+            'CHARACTER_SET_CLIENT' => $value['CHARACTER_SET_CLIENT'],
+            'COLLATION_CONNECTION' => $value['COLLATION_CONNECTION'],
+        ]);
+        $this->setFileContent([
+            'FileKind'    => $this->fileToStore['relevant'],
+            'Explanation' => 'Set session charset and collation',
+            'Query'       => $sQuery,
+        ]);
+        $this->runQuery($sQuery, 'runWithDisplayFirst');
+        return $this->queueDetails;
+    }
+
     private function setQuery2ServerAndGetFullArray($result, $prefixKey = null)
     {
         $aReturn   = [];
@@ -219,35 +264,5 @@ class MySQLactions extends ResultFile
             echo $this->setFeedback(0, _('i18n_Feedback_Error'), sprintf(_('i18n_Feedback_UndefinedQuery'), $label));
         }
         return $sReturn;
-    }
-
-    protected function runQueryWithFeedback($listOfFields, $listOfEvents)
-    {
-        $sQuery = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
-        $this->setFileContent([
-            'FileKind' => $this->fileToStore['relevant'],
-            'Query'    => '-- "' . $sQuery . '"',
-        ]);
-        foreach ($listOfEvents as $value) {
-            $infoLine      = null;
-            $infoDisplayed = null;
-            foreach ($listOfFields as $key => $value2) {
-                $infoLine[]          = $value[$value2];
-                $infoDisplayed[$key] = $value[$value2];
-            }
-            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
-            $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
-            $this->setFileContent([
-                'FileKind' => $this->fileToStore['relevant'],
-                'Query'    => '-- "' . $sQuery . '"',
-            ]);
-        }
-        unset($infoDisplayed);
-        unset($infoLine);
-        $this->setFileContent([
-            'FileKind' => $this->fileToStore['relevant'],
-            'Query'    => '--',
-        ]);
-        return implode('', $sReturn);
     }
 }
