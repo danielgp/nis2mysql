@@ -808,14 +808,14 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
 
     final protected function connectToMySql()
     {
-        global $cfg;
+        $cfg = $this->mySqlServers();
         if (is_null($this->mySQLconfig)) {
             $this->mySQLconfig = [
-                'host'     => $cfg['Servers'][$_SESSION['a']['serverChoosed']]['host'],
-                'port'     => $cfg['Servers'][$_SESSION['a']['serverChoosed']]['port'],
-                'user'     => $cfg['Servers'][$_SESSION['a']['serverChoosed']]['user'],
-                'password' => $cfg['Servers'][$_SESSION['a']['serverChoosed']]['password'],
-                'database' => $cfg['Servers'][$_SESSION['a']['serverChoosed']]['database'],
+                'host'     => $cfg[$_SESSION['a']['serverChoosed']]['host'],
+                'port'     => $cfg[$_SESSION['a']['serverChoosed']]['port'],
+                'user'     => $cfg[$_SESSION['a']['serverChoosed']]['user'],
+                'password' => $cfg[$_SESSION['a']['serverChoosed']]['password'],
+                'database' => $cfg[$_SESSION['a']['serverChoosed']]['database'],
             ];
         }
         if (is_null($this->mySQLconnection)) {
@@ -1027,14 +1027,14 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
 
     private function getStepAssessVariations($stepTitle)
     {
-        global $cfg;
+        $cfg     = $this->mySqlServers();
         $sReturn = [];
         switch ($_SESSION['a']['actionChoosed']) {
             case 'listAdvancedFeatureByChosenDefiner':
             case 'modifyDefinerOfAdvancedFeatures':
                 $listOfDatabases = $this->runQuery($this->storedQuery('ListOfDatabases'), 'fullArray3');
                 if (is_null($listOfDatabases)) {
-                    $value2use = $cfg['Servers'][$_SESSION['a']['serverChoosed']]['verbose'];
+                    $value2use = $cfg[$_SESSION['a']['serverChoosed']]['verbose'];
                     $sReturn[] = '<p>'
                         . sprintf(_('i18n_TabAssesVariations_NoValuesToChooseFrom'), $value2use)
                         . '</p>';
@@ -1115,7 +1115,7 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
 
     private function getStepServer($stepTitle)
     {
-        global $cfg;
+        $cfg       = $this->mySqlServers();
         $sReturn   = [];
         $sReturn[] = '<p>' . _('i18n_TabServer_ChooseServerToConnectTo') . '</p>'
             . '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">';
@@ -1124,7 +1124,7 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
         } else {
             $valueSelected = '';
         }
-        foreach ($cfg['Servers'] as $key => $value) {
+        foreach ($cfg as $key => $value) {
             $sReturn[] = '<input type="radio" name="serverChoosed" value="'
                 . $key . '" id="srv' . $key . '"'
                 . ($valueSelected == $key ? ' checked' : '') . ' />'
@@ -1445,9 +1445,8 @@ class ChangeMySqlAdvancedFeatures extends AppQueries
 
     private function setHeaderLanguages()
     {
-        global $cfg;
         $sReturn = [];
-        foreach ($cfg['Application']['AvailableLanguages'] as $key => $value) {
+        foreach ($this->applicationFlags['available_languages'] as $key => $value) {
             if ($_SESSION['lang'] === $key) {
                 $sReturn[] = '<b>' . $value . '</b>';
             } else {
