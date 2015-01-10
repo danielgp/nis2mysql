@@ -1,9 +1,29 @@
 <?php
 
 /**
- * Description of pdg_cmysqlaf
  *
- * @author Daniel-Gheorghe Popiniuc
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Daniel Popiniuc
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
  */
 
 namespace danielgp\nis2mysql;
@@ -14,22 +34,21 @@ namespace danielgp\nis2mysql;
  * @author Daniel-Gheorghe Popiniuc <daniel.popiniuc@honeywell.com>
  * @version 1.0.20140922
  */
-class ChangeMySqlAdvancedFeatures
+class ChangeMySqlAdvancedFeatures extends AppQueries
 {
 
     use \danielgp\common_lib\CommonCode;
 
     const LOCALE_DOMAIN = 'nis_messages';
 
+    private $applicationFlags;
     private $actions;
-    private $definer              = null;
-    private $fileToStore          = null;
-    private $tabs                 = 1;
-    private $validationError      = null;
-    protected $localizationDomain = null;
-    protected $mySQLconfig        = null;
-    protected $mySQLconnection    = null;
-    protected $queueDetails       = '';
+    private $definer           = null;
+    private $fileToStore       = null;
+    private $tabs              = 1;
+    protected $mySQLconfig     = null;
+    protected $mySQLconnection = null;
+    protected $queueDetails    = '';
 
     /**
      * Provides basic checking of requried parameters and initiates LDAP attributes
@@ -39,9 +58,15 @@ class ChangeMySqlAdvancedFeatures
      */
     public function __construct()
     {
-        global $cfg;
+        $this->applicationFlags = [
+            'available_languages' => [
+                'en_US' => 'EN',
+                'ro_RO' => 'RO',
+            ],
+            'default_language'    => $this->configuredDefaultLanguage(),
+            'Name'                => 'Normalize MySQL internal structures',
+        ];
         $this->handleLocalizationNIS();
-        $this->fileToStore['glue'] = $cfg['FileToStore']['Separator'];
         $this->config();
         echo $this->getInterface();
     }
@@ -85,7 +110,7 @@ class ChangeMySqlAdvancedFeatures
                             'Modified on'          => 'LAST_ALTERED',
                             'Last executed on'     => 'LAST_EXECUTED',
                         ];
-                        $sQuery       = implode('"' . $this->fileToStore['glue'] . '"', array_keys($listOfFields));
+                        $sQuery       = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
                         $this->setFileContent([
                             'FileKind' => $this->fileToStore['relevant'],
                             'Query'    => '-- "' . $sQuery . '"',
@@ -100,7 +125,7 @@ class ChangeMySqlAdvancedFeatures
                             $sReturn[] = '<p>' . $this->getTimestamp()
                                 . json_encode($infoDisplayed, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT)
                                 . '</p>';
-                            $sQuery    = implode('"' . $this->fileToStore['glue'] . '"', $infoLine);
+                            $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
                             $this->setFileContent([
                                 'FileKind' => $this->fileToStore['relevant'],
                                 'Query'    => '-- "' . $sQuery . '"',
@@ -200,7 +225,7 @@ class ChangeMySqlAdvancedFeatures
                             'Created on'       => 'CREATED',
                             'Modified on'      => 'LAST_ALTERED',
                         ];
-                        $sQuery       = implode('"' . $this->fileToStore['glue'] . '"', array_keys($listOfFields));
+                        $sQuery       = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
                         $this->setFileContent([
                             'FileKind' => $this->fileToStore['relevant'],
                             'Query'    => '-- "' . $sQuery . '"',
@@ -215,7 +240,7 @@ class ChangeMySqlAdvancedFeatures
                             $sReturn[] = '<p>' . $this->getTimestamp()
                                 . json_encode($infoDisplayed, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT)
                                 . '</p>';
-                            $sQuery    = implode('"' . $this->fileToStore['glue'] . '"', $infoLine);
+                            $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
                             $this->setFileContent([
                                 'FileKind' => $this->fileToStore['relevant'],
                                 'Query'    => '-- "' . $sQuery . '"',
@@ -344,7 +369,7 @@ class ChangeMySqlAdvancedFeatures
                             'Collation'            => 'COLLATION_CONNECTION',
                             'SQL mode'             => 'SQL_MODE',
                         ];
-                        $sQuery       = implode('"' . $this->fileToStore['glue'] . '"', array_keys($listOfFields));
+                        $sQuery       = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
                         $this->setFileContent([
                             'FileKind' => $this->fileToStore['relevant'],
                             'Query'    => '-- "' . $sQuery . '"',
@@ -358,7 +383,7 @@ class ChangeMySqlAdvancedFeatures
                             }
                             $sReturn[] = '<p>' . $this->getTimestamp()
                                 . json_encode($infoDisplayed, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT) . '</p>';
-                            $sQuery    = implode('"' . $this->fileToStore['glue'] . '"', $infoLine);
+                            $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
                             $this->setFileContent([
                                 'FileKind' => $this->fileToStore['relevant'],
                                 'Query'    => '-- "' . $sQuery . '"',
@@ -509,7 +534,7 @@ class ChangeMySqlAdvancedFeatures
                             'Security Type' => 'SECURITY_TYPE',
                             'Is updatable'  => 'IS_UPDATABLE',
                         ];
-                        $sQuery       = implode('"' . $this->fileToStore['glue'] . '"', array_keys($listOfFields));
+                        $sQuery       = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
                         $this->setFileContent([
                             'FileKind' => $this->fileToStore['relevant'],
                             'Query'    => '-- "' . $sQuery . '"',
@@ -523,7 +548,7 @@ class ChangeMySqlAdvancedFeatures
                             }
                             $sReturn[] = '<p>' . $this->getTimestamp()
                                 . json_encode($infoDisplayed, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT) . '</p>';
-                            $sQuery    = implode('"' . $this->fileToStore['glue'] . '"', $infoLine);
+                            $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
                             $this->setFileContent([
                                 'FileKind' => $this->fileToStore['relevant'],
                                 'Query'    => '-- "' . $sQuery . '"',
@@ -807,28 +832,26 @@ class ChangeMySqlAdvancedFeatures
 
     private function createFile($fileKind, $fileNameTermination)
     {
-        global $cfg;
-        $resultsDir                   = $cfg['FileToStore']['Folder'];
+        $resultsDir                   = $this->configuredFolderForResults();
         $fileName                     = $resultsDir . date('Y-m-d--H-i-s') . '__' . $fileNameTermination . '.sql';
         $this->fileToStore[$fileKind] = fopen($fileName, 'w');
     }
 
     private function getInterface()
     {
-        global $cfg;
         $sReturn   = [];
         $sReturn[] = '<!DOCTYPE html>'
             . '<html lang="' . str_replace('_', '-', $_SESSION['lang']) . '">'
             . '<head>'
             . '<meta charset="utf-8" />'
             . '<meta name="viewport" content="width=device-width" />'
-            . '<title>' . $cfg['Application']['Name'] . '</title>'
+            . '<title>' . $this->applicationFlags['Name'] . '</title>'
             . $this->setCssFile('css/main.css')
             . $this->setJavascriptFile('js/tabber.min.js')
             . '</head>'
             . '<body>'
             . $this->setJavascriptContent('document.write(\'<style type="text/css">.tabber{display:none;}</style>\');')
-            . '<h1>' . $cfg['Application']['Name'] . '</h1>'
+            . '<h1>' . $this->applicationFlags['Name'] . '</h1>'
             . $this->setHeaderLanguages()
             . '<div class="tabber" id="tab">';
         $this->configDefaults();
@@ -836,11 +859,9 @@ class ChangeMySqlAdvancedFeatures
             $sReturn[] = $this->getInterfaceSteps($counter);
         }
         $sReturn[] = '<div class="tabbertab" id="tab0" title="' . _('i18n_TabDebug') . '">'
-            . (isset($_REQUEST) ? 'REQUEST = '
-                . json_encode($_REQUEST, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT) : '')
+            . (isset($_REQUEST) ? 'REQUEST = ' . $this->setArray2json($_REQUEST) : '')
             . '<hr/>'
-            . (isset($_SESSION) ? 'SESSION = '
-                . json_encode($_SESSION, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT) : '')
+            . (isset($_SESSION) ? 'SESSION = ' . $this->setArray2json($_SESSION) : '')
             . '<hr/>'
             . 'actions SESSION counted = ' . (isset($_SESSION['a']) ? count($_SESSION['a']) : 0)
             . '<br/>'
@@ -1056,9 +1077,6 @@ class ChangeMySqlAdvancedFeatures
         $sReturn = [];
         switch ($_SESSION['a']['actionChoosed']) {
             case 'modifyDefinerOfAdvancedFeatures':
-                if (!is_null($this->validationError)) {
-                    $sReturn[] = $this->validationError;
-                }
                 $listOfUsersWithPrivileges = $this->runQuery($this->storedQuery('ListOfUsersWithAssignedPrivileges', [
                         'definerToModify' => $this->definer['oldDefinerQuoted']
                     ]), 'fullArray3WithDisplay');
@@ -1109,8 +1127,7 @@ class ChangeMySqlAdvancedFeatures
         foreach ($cfg['Servers'] as $key => $value) {
             $sReturn[] = '<input type="radio" name="serverChoosed" value="'
                 . $key . '" id="srv' . $key . '"'
-                . ($valueSelected == $key ? ' checked' : '')
-                . ' />'
+                . ($valueSelected == $key ? ' checked' : '') . ' />'
                 . '<label for="srv' . $key . '" style="width:auto;">'
                 . $value['verbose'] . '</label><br/>';
         }
@@ -1176,15 +1193,14 @@ class ChangeMySqlAdvancedFeatures
 
     private function handleLocalizationNIS()
     {
-        global $cfg;
         if (isset($_GET['lang'])) {
-            $_SESSION['lang'] = $_GET['lang'];
+            $_SESSION['lang'] = filter_var($_GET['lang'], FILTER_SANITIZE_STRING);
         } elseif (!isset($_SESSION['lang'])) {
-            $_SESSION['lang'] = $cfg['Application']['DefaultLanguage'];
+            $_SESSION['lang'] = $this->applicationFlags['default_language'];
         }
         /* to avoid potential language injections from other applications that do not applies here */
-        if (!in_array($_SESSION['lang'], array_keys($cfg['Application']['AvailableLanguages']))) {
-            $_SESSION['lang'] = $cfg['Application']['DefaultLanguage'];
+        if (!in_array($_SESSION['lang'], array_keys($this->applicationFlags['available_languages']))) {
+            $_SESSION['lang'] = $this->applicationFlags['default_language'];
         }
         T_setlocale(LC_MESSAGES, $_SESSION['lang']);
         if (function_exists('bindtextdomain')) {
@@ -1456,14 +1472,12 @@ class ChangeMySqlAdvancedFeatures
      */
     final protected function storedQuery($label, $given_parameters = null)
     {
-        require_once 'sql.queries.inc.php';
-        $tq = new \danielgp\nis2mysql\AppQueries;
-        // redirection because of a reserved word
+// redirection because of a reserved word
         if ($label == 'use') {
             $label = 'usee';
         }
-        // end of redirection
-        $sReturn = call_user_func_array([$tq, 'setRightQuery'], [$label, $given_parameters]);
+// end of redirection
+        $sReturn = $this->setRightQuery($label, $given_parameters);
         if ($sReturn === false) {
             echo $this->setFeedback(0, _('i18n_Feedback_Error'), sprintf(_('i18n_Feedback_UndefinedQuery'), $label));
         }

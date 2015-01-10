@@ -25,8 +25,43 @@
  * SOFTWARE.
  *
  */
-session_start();
-require_once '../vendor/inetsys/phpgettext/gettext.inc';
-require_once '../vendor/autoload.php';
 
-$app = new danielgp\nis2mysql\ChangeMySqlAdvancedFeatures;
+namespace danielgp\nis2mysql;
+
+/**
+ * Description of Configuration
+ *
+ * @author E303778
+ */
+class UserConfiguration
+{
+
+    protected function configuredDefaultLanguage()
+    {
+        return 'ro_RO';
+    }
+
+    protected function configuredFolderForResults()
+    {
+        return __DIR__ . '/results/';
+    }
+
+    protected function configuredGlue()
+    {
+        return '|';
+    }
+
+    protected function mySqlServers()
+    {
+        return [
+            [
+                'database' => 'mysql',
+                'host'     => 'localhost',
+                'password' => '',
+                'port'     => 3306,
+                'user'     => 'root',
+                'verbose'  => 'MySQL @ localhost',
+            ]
+        ];
+    }
+}

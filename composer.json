@@ -23,7 +23,8 @@
         },
         "classmap": [
             "source/AppQueries.php",
-            "source/ChangeMySqlAdvancedFeatures.php"
+            "source/ChangeMySqlAdvancedFeatures.php",
+            "source/UserConfiguration.php"
         ]
     },
     "minimum-stability": "stable",
