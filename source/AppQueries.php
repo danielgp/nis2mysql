@@ -178,7 +178,7 @@ class AppQueries extends UserConfiguration
         return preg_replace('|^CREATE DEFINER=(' . $o . ') | ', 'CREATE DEFINER=' . $n . ' ', $r);
     }
 
-    private function sModifyTrigger($p)
+    private function sModifyTrigger($parameters)
     {
         $o = $parameters['oldDefinerSql'];
         $n = $parameters['newDefinerSql'];
@@ -224,19 +224,35 @@ class AppQueries extends UserConfiguration
         return 'USE `' . $parameters['Database'] . '`;';
     }
 
-    public function setRightQuery($label, $given_parameters = null)
+    public function setRightQuery($label, $givenParameters = null)
     {
-        $label = 's' . $label;
-        if (method_exists($this, $label)) {
-            if (is_null($given_parameters)) {
-                return call_user_func([$this, $label]);
-            } else {
-                if (is_array($given_parameters)) {
-                    return call_user_func_array([$this, $label], [$given_parameters]);
-                } else {
-                    return call_user_func([$this, $label], $given_parameters);
-                }
-            }
+        $label               = 's' . $label;
+        $predefinedFunctions = [
+            'AssesmentListOfDefiner'            => $this->sAssesmentListOfDefiner($givenParameters),
+            'AssesmentListOfDefinerByType'      => $this->sAssesmentListOfDefinerByType($givenParameters),
+            'DropStoredRoutine'                 => $this->sDropStoredRoutine($givenParameters),
+            'DropTrigger'                       => $this->sDropTrigger($givenParameters),
+            'ListOfDatabases'                   => $this->sListOfDatabases(),
+            'ListOfDatabasesFullDetails'        => $this->sListOfDatabasesFullDetails(),
+            'ListOfEventsDetails'               => $this->sListOfEventsDetails($givenParameters),
+            'ListOfStoredRoutinesDetails'       => $this->sListOfStoredRoutinesDetails($givenParameters),
+            'ListOfTablesFullDetails'           => $this->sListOfTablesFullDetails(),
+            'ListOfTriggersDetails'             => $this->sListOfTriggersDetails($givenParameters),
+            'ListOfUsersWithAssignedPrivileges' => $this->sListOfUsersWithAssignedPrivileges($givenParameters),
+            'LockTableWrite'                    => $this->sLockTableWrite($givenParameters),
+            'ModifyEvent'                       => $this->sModifyEvent($givenParameters),
+            'ModifyStoredRoutine'               => $this->sModifyStoredRoutine($givenParameters),
+            'ModifyTrigger'                     => $this->sModifyTrigger($givenParameters),
+            'ModifyView'                        => $this->sModifyView($givenParameters),
+            'SetSessionCharacterAndCollation'   => $this->sSetSessionCharacterAndCollation($givenParameters),
+            'SetSessionSqlMode'                 => $this->sSetSessionSqlMode($givenParameters),
+            'ShowCreateStoredRoutine'           => $this->sShowCreateStoredRoutine($givenParameters),
+            'ShowCreateTrigger'                 => $this->sShowCreateTrigger($givenParameters),
+            'UnlockTables'                      => $this->sUnlockTables(),
+            'UseDatabase'                       => $this->sUseDatabase($givenParameters),
+        ];
+        if (in_arrray($label, array_keys($predefinedFunctions))) {
+            return $predefinedFunctions[$label];
         } else {
             echo '<hr/>Unknown query... (wanted was `' . $label . '`)<hr/>';
             return false;
