@@ -537,6 +537,7 @@ class MySQLactions extends ResultFile
                 case 'array_pairs_key_valueWithDisplay':
                 case 'array_pairs_key_value':
                     $aReturn = $this->setQuery2ServerAndGetSimpleArray($result);
+                    break;
                 case 'fullArray3WithDisplay':
                 case 'fullArray3':
                     $aReturn = $this->setQuery2ServerAndGetFullArray($result, $prefixKey);
