@@ -39,8 +39,6 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
 
     use \danielgp\common_lib\CommonCode;
 
-    const LOCALE_DOMAIN = 'nis_messages';
-
     private $applicationFlags;
     private $actions;
     private $definer = null;
@@ -65,8 +63,8 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
         ];
         $this->handleLocalizationNIS();
         $this->actions          = [
-            'listAdvancedFeatureByChosenDefiner' => _('i18n_TabAction_OptionList'),
-            'modifyDefinerOfAdvancedFeatures'    => _('i18n_TabAction_OptionModify'),
+            'listAdvancedFeatureByChosenDefiner' => dgettext(self::LOCALE_DOMAIN, 'i18n_TabAction_OptionList'),
+            'modifyDefinerOfAdvancedFeatures'    => dgettext(self::LOCALE_DOMAIN, 'i18n_TabAction_OptionModify'),
         ];
         echo $this->getInterface();
     }
@@ -215,7 +213,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
         for ($counter = 0; $counter <= $this->tabs; $counter++) {
             $sReturn[] = $this->getInterfaceSteps($counter);
         }
-        $sReturn[] = '<div class="tabbertab" id="tab0" title="' . _('i18n_TabDebug') . '">'
+        $sReturn[] = '<div class="tabbertab" id="tab0" title="' . dgettext(self::LOCALE_DOMAIN, 'i18n_TabDebug') . '">'
             . (isset($_REQUEST) ? 'REQUEST = ' . $this->setArray2json($_REQUEST) : '')
             . '<hr/>' . (isset($_SESSION) ? 'SESSION = ' . $this->setArray2json($_SESSION) : '')
             . '<hr/>' . 'actions SESSION counted = ' . (isset($_SESSION['a']) ? count($_SESSION['a']) : 0)
@@ -231,28 +229,28 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
     {
         switch ($stepNo) {
             case 0:
-                $sReturn[] = $this->getStepServer(_('i18n_TabServer'));
+                $sReturn[] = $this->getStepServer(dgettext(self::LOCALE_DOMAIN, 'i18n_TabServer'));
                 break;
             case 1:
-                $sReturn[] = $this->getStepAction(_('i18n_TabAction'));
+                $sReturn[] = $this->getStepAction(dgettext(self::LOCALE_DOMAIN, 'i18n_TabAction'));
                 break;
             default:
                 $nextSteps = null;
                 switch ($_SESSION['a']['actionChoosed']) {
                     case 'listAdvancedFeatureByChosenDefiner':
                         $nextSteps = [
-                            2 => $this->getStepAssessVariations(_('i18n_TabAssesVariations')),
-                            3 => $this->getStepVariationsToChooseFrom(_('i18n_TabVariations')),
-                            4 => $this->getStepAdvancedFeatureToApplyTo(_('i18n_TabAdvancedFeature')),
+                            2 => $this->getStepAssessVariations(dgettext(self::LOCALE_DOMAIN, 'i18n_TabAssesVariations')),
+                            3 => $this->getStepVariationsToChooseFrom(dgettext(self::LOCALE_DOMAIN, 'i18n_TabVariations')),
+                            4 => $this->getStepAdvancedFeatureToApplyTo(dgettext(self::LOCALE_DOMAIN, 'i18n_TabAdvancedFeature')),
                             5 => $this->getStepActionDetails('Action details'),
                         ];
                         break;
                     case 'modifyDefinerOfAdvancedFeatures':
                         $nextSteps = [
-                            2 => $this->getStepAssessVariations(_('i18n_TabAssesVariations')),
-                            3 => $this->getStepVariationsToChooseFrom(_('i18n_TabVariations')),
+                            2 => $this->getStepAssessVariations(dgettext(self::LOCALE_DOMAIN, 'i18n_TabAssesVariations')),
+                            3 => $this->getStepVariationsToChooseFrom(dgettext(self::LOCALE_DOMAIN, 'i18n_TabVariations')),
                             4 => $this->getStepDefineNewValue('Provide new definer'),
-                            5 => $this->getStepAdvancedFeatureToApplyTo(_('i18n_TabAdvancedFeature')),
+                            5 => $this->getStepAdvancedFeatureToApplyTo(dgettext(self::LOCALE_DOMAIN, 'i18n_TabAdvancedFeature')),
                             6 => $this->getStepActionDetails('Action details'),
                         ];
                         break;
@@ -272,7 +270,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
     private function getStepAction($stepTitle)
     {
         $sReturn   = [];
-        $sReturn[] = '<p>' . _('i18n_TabAction_ChooseActionToTake') . '</p>'
+        $sReturn[] = '<p>' . dgettext(self::LOCALE_DOMAIN, 'i18n_TabAction_ChooseActionToTake') . '</p>'
             . '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">';
         if (isset($_SESSION['a']['actionChoosed'])) {
             $valueSelected = $_SESSION['a']['actionChoosed'];
@@ -287,7 +285,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                 . $value . '</label><br/>';
         }
         $sReturn[] = '<input type="submit" style="display:block;" '
-            . 'value="' . _('i18n_TabAction_IchoseProceed') . '" />'
+            . 'value="' . dgettext(self::LOCALE_DOMAIN, 'i18n_TabAction_IchoseProceed') . '" />'
             . '</form>';
         return '<div class="tabbertab'
             . (count($_SESSION['a']) == 1 ? ' tabbertabdefault' : '')
@@ -375,7 +373,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                         'dbs'             => $_SESSION['a']['dbs'],
                         'definerToModify' => $_SESSION['a']['definerToModify']
                     ]), 'fullArray3');
-                $sReturn[]            = '<p>' . _('i18n_TabAdvancedFeature_Choose') . '</p>'
+                $sReturn[]            = '<p>' . dgettext(self::LOCALE_DOMAIN, 'i18n_TabAdvancedFeature_Choose') . '</p>'
                     . '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">';
                 if (isset($_SESSION['a']['afType'])) {
                     $valueSelected = $_SESSION['a']['afType'];
@@ -390,11 +388,11 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                         . '<label for="af_' . $value['Type'] . '" '
                         . 'style="margin-left:5px;'
                         . ($value['No.'] == 0 ? 'color:grey;' : '') . '">'
-                        . sprintf(_('i18n_TabAdvancedFeature_Choice_' . $value['Type']), $value['No.'])
+                        . sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_TabAdvancedFeature_Choice_' . $value['Type']), $value['No.'])
                         . '</label><br/>';
                 }
                 $sReturn[] = '<input type="submit" style="display:block;" value="'
-                    . _('i18n_TabAdvancedFeature_IchoseProceed') . '" />'
+                    . dgettext(self::LOCALE_DOMAIN, 'i18n_TabAdvancedFeature_IchoseProceed') . '" />'
                     . '</form>';
                 break;
         }
@@ -416,7 +414,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                 if (is_null($listOfDatabases)) {
                     $value2use = $cfg[$_SESSION['a']['serverChoosed']]['verbose'];
                     $sReturn[] = '<p>'
-                        . sprintf(_('i18n_TabAssesVariations_NoValuesToChooseFrom'), $value2use)
+                        . sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_TabAssesVariations_NoValuesToChooseFrom'), $value2use)
                         . '</p>';
                 } else {
                     if (isset($_SESSION['a']['dbs'])) {
@@ -424,7 +422,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                     } else {
                         $choosenDbs = [];
                     }
-                    $sReturn[] = '<p>' . _('i18n_TabAssesVariations_ChooseDatabases') . '</p>'
+                    $sReturn[] = '<p>' . dgettext(self::LOCALE_DOMAIN, 'i18n_TabAssesVariations_ChooseDatabases') . '</p>'
                         . '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">'
                         . '<select name="dbs[]" multiple size="'
                         . min([15, count($listOfDatabases)]) . '">';
@@ -435,14 +433,14 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                     }
                     $sReturn[] = '</select>'
                         . '<div style="color:#C7C7C7;font-style:italic;">'
-                        . _('i18n_Feedback_MultipleSelectionAdvise') . '</div>'
+                        . dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_MultipleSelectionAdvise') . '</div>'
                         . '<input type="submit" style="display:block;" '
-                        . 'value="' . _('i18n_TabAssesVariations_IchoseProceed') . '" />'
+                        . 'value="' . dgettext(self::LOCALE_DOMAIN, 'i18n_TabAssesVariations_IchoseProceed') . '" />'
                         . '</form>';
                 }
                 break;
             default:
-                $sReturn[] = _('i18n_Feedback_UndefinedAction');
+                $sReturn[] = dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_UndefinedAction');
                 break;
         }
         return '<div class="tabbertab'
@@ -497,7 +495,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
     {
         $cfg       = $this->configuredMySqlServers();
         $sReturn   = [];
-        $sReturn[] = '<p>' . _('i18n_TabServer_ChooseServerToConnectTo') . '</p>'
+        $sReturn[] = '<p>' . dgettext(self::LOCALE_DOMAIN, 'i18n_TabServer_ChooseServerToConnectTo') . '</p>'
             . '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">';
         if (isset($_SESSION['a']['serverChoosed'])) {
             $valueSelected = $_SESSION['a']['serverChoosed'];
@@ -512,7 +510,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                 . $value['verbose'] . '</label><br/>';
         }
         $sReturn[] = '<input type="submit" style="display:block;" '
-            . 'value="' . _('i18n_TabServer_IchoseProceed') . '" />'
+            . 'value="' . dgettext(self::LOCALE_DOMAIN, 'i18n_TabServer_IchoseProceed') . '" />'
             . '</form>';
         return '<div class="tabbertab'
             . (!isset($_SESSION) ? ' tabbertabdefault' : '')
@@ -535,10 +533,10 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                 }
                 if (is_null($listOfDefiners)) {
                     $sReturn[] = '<p style="color:red;">'
-                        . _('i18n_TabVariations__NoValuesToChooseFrom')
+                        . dgettext(self::LOCALE_DOMAIN, 'i18n_TabVariations__NoValuesToChooseFrom')
                         . '</p>';
                 } else {
-                    $sReturn[] = '<p>' . _('i18n_TabVariations__ChooseValue') . '</p>'
+                    $sReturn[] = '<p>' . dgettext(self::LOCALE_DOMAIN, 'i18n_TabVariations__ChooseValue') . '</p>'
                         . '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">';
                     if (isset($_SESSION['a']['definerToModify'])) {
                         $valueSelected = $_SESSION['a']['definerToModify'];
@@ -554,7 +552,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                             . $value['DEFINER'] . '</label>';
                     }
                     $sReturn[] = '<input type="submit" style="display:block;" '
-                        . 'value="' . _('i18n_TabVariations__IchoseProceed') . '" />'
+                        . 'value="' . dgettext(self::LOCALE_DOMAIN, 'i18n_TabVariations__IchoseProceed') . '" />'
                         . '</form>';
                 }
                 break;
@@ -581,7 +579,6 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
         if (function_exists('bindtextdomain')) {
             bindtextdomain(self::LOCALE_DOMAIN, realpath('./locale'));
             bind_textdomain_codeset(self::LOCALE_DOMAIN, 'UTF-8');
-            textdomain(self::LOCALE_DOMAIN);
         } else {
             echo 'No gettext extension is active in current PHP configuration!';
         }

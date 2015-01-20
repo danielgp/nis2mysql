@@ -36,6 +36,8 @@ class MySQLactions extends ResultFile
 
     use \danielgp\common_lib\CommonCode;
 
+    const LOCALE_DOMAIN              = 'nis_messages';
+
     protected $mySQLconfig     = null;
     protected $mySQLconnection = null;
     protected $queryClass;
@@ -463,17 +465,17 @@ class MySQLactions extends ResultFile
 
     protected function connectOrSetFeedbackIfNoMySqlConnection($thingsToAnalyze, $type = 'analyze', $ftrs = null)
     {
-        $this->connectToMySql();
+        $this->connectToMySqlServer();
         if (is_null($this->mySQLconnection)) {
             extract($this->mySQLconfig);
             switch ($type) {
                 case 'analyze':
-                    $feedback          = _('i18n_Feedback_AnalyzeImpossible');
-                    $feedbackToProvide = sprintf($feedback, $thingsToAnalyze, $host, $port, $user, $db);
+                    $feedback          = dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_AnalyzeImpossible');
+                    $feedbackToProvide = sprintf($feedback, $thingsToAnalyze, $host, $port, $username, $db);
                     break;
                 case 'run':
-                    $feedback          = _('i18n_Feedback_RunImpossible');
-                    $feedbackToProvide = sprintf($feedback, $ftrs['query'], $host, $port, $user, $db);
+                    $feedback          = dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_RunImpossible');
+                    $feedbackToProvide = sprintf($feedback, $ftrs['query'], $host, $port, $username, $db);
                     break;
                 default:
                     $feedbackToProvide = '';
@@ -483,27 +485,20 @@ class MySQLactions extends ResultFile
         }
     }
 
-    protected function connectToMySql()
+    protected function connectToMySqlServer()
     {
         $cfg = $this->configuredMySqlServers();
         if (is_null($this->mySQLconfig)) {
             $this->mySQLconfig = [
                 'host'     => $cfg[$_SESSION['a']['serverChoosed']]['host'],
                 'port'     => $cfg[$_SESSION['a']['serverChoosed']]['port'],
-                'user'     => $cfg[$_SESSION['a']['serverChoosed']]['user'],
+                'username' => $cfg[$_SESSION['a']['serverChoosed']]['user'],
                 'password' => $cfg[$_SESSION['a']['serverChoosed']]['password'],
                 'database' => $cfg[$_SESSION['a']['serverChoosed']]['database'],
             ];
         }
         if (is_null($this->mySQLconnection)) {
-            extract($this->mySQLconfig);
-            $this->mySQLconnection = new \mysqli($host, $user, $password, $database, $port);
-            if ($this->mySQLconnection->connect_error) {
-                $erNo  = $this->mySQLconnection->connect_errno;
-                $erMsg = $this->mySQLconnection->connect_error;
-                echo $this->getTimestamp()
-                . sprintf(_('i18n_Feedback_ConnectionError'), $erNo, $erMsg, $host, $port, $user, $database);
-            }
+            $this->connectToMySql($this->mySQLconfig);
         }
     }
 
@@ -513,13 +508,13 @@ class MySQLactions extends ResultFile
         switch ($sReturnType) {
             case 'noRunJustDisplay':
                 $this->queueDetails .= '<p style="color:grey;">' . $this->getTimestamp()
-                    . sprintf(_('i18n_Feedback_MySQL_DisplayedOnly'), htmlentities($sQuery), $sReturnType)
+                    . sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_MySQL_DisplayedOnly'), htmlentities($sQuery), $sReturnType)
                     . '</p>';
                 return '';
                 break;
             case 'runWithDisplayFirst':
                 $this->queueDetails .= '<p style="color:grey;">' . $this->getTimestamp()
-                    . sprintf(_('i18n_Feedback_MySQL_ToBeExecuted'), htmlentities($sQuery), $sReturnType)
+                    . sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_MySQL_ToBeExecuted'), htmlentities($sQuery), $sReturnType)
                     . '</p>';
                 break;
         }
@@ -529,18 +524,30 @@ class MySQLactions extends ResultFile
                 $iNoOfRows = $result->num_rows;
                 if (($sReturnType != 'runWithDisplayFirst') && (strpos($sReturnType, 'WithDisplay') !== false)) {
                     $this->queueDetails .= '<p style="color:green;">' . $this->getTimestamp()
-                        . sprintf(_('i18n_Feedback_MySQL_Executed'), htmlentities($sQuery), $sReturnType, $iNoOfRows)
+                        . sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_MySQL_Executed'), htmlentities($sQuery), $sReturnType, $iNoOfRows)
                         . '</p>';
                 }
             }
             switch ($sReturnType) {
                 case 'array_pairs_key_valueWithDisplay':
                 case 'array_pairs_key_value':
-                    $aReturn = $this->setQuery2ServerAndGetSimpleArray($result);
+                    $aReturn = $this->setMySQLquery2ServerByPattern([
+                            'NoOfColumns' => $result->field_count,
+                            'NoOfRows'    => $result->num_rows,
+                            'QueryResult' => $result,
+                            'returnType'  => 'array_pairs_key_value',
+                            'return'      => $aReturn
+                        ])['result'];
                     break;
                 case 'fullArray3WithDisplay':
                 case 'fullArray3':
-                    $aReturn = $this->setQuery2ServerAndGetFullArray($result, $prefixKey);
+                    $aReturn = $this->setMySQLquery2ServerByPattern([
+                            'NoOfColumns' => $result->field_count,
+                            'NoOfRows'    => $result->num_rows,
+                            'QueryResult' => $result,
+                            'returnType'  => 'full_array_key_numbered',
+                            'return'      => $aReturn
+                        ])['result'];
                     break;
                 case 'runWithDisplayFirst':
                     break;
@@ -562,7 +569,7 @@ class MySQLactions extends ResultFile
             extract($this->mySQLconfig);
             $err = $this->mySQLconnection->error;
             $this->queueDetails .= '<p style="color:red;">' . $this->getTimestamp()
-                . sprintf(_('i18n_Feedback_MySQL_Error'), htmlentities($sQuery), $host, $port, $username, $err)
+                . sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_MySQL_Error'), htmlentities($sQuery), $host, $port, $username, $err)
                 . '</p>';
         }
     }
@@ -612,60 +619,6 @@ class MySQLactions extends ResultFile
         return $this->queueDetails;
     }
 
-    private function setQuery2ServerAndGetFullArray($result, $prefixKey = null)
-    {
-        $aReturn   = [];
-        $iNoOfRows = $result->num_rows;
-        if ($iNoOfRows == 0) {
-            if (is_null($prefixKey)) {
-                $aReturn = null;
-            } else {
-                $aReturn[$prefixKey] = null;
-            }
-        } else {
-            $counter2 = 0;
-            for ($counter = 0; $counter < $iNoOfRows; $counter++) {
-                $line           = $result->fetch_row();
-                $finfo          = $result->fetch_fields();
-                $column_counter = 0;
-                foreach ($finfo as $value) {
-                    $key = $value->name;
-                    if (is_null($prefixKey)) {
-                        $aReturn[$counter2][$key] = $line[$column_counter];
-                    } else {
-                        $aReturn[$prefixKey][$counter2][$key] = $line[$column_counter];
-                    }
-                    $column_counter += 1;
-                }
-                $counter2 += 1;
-            }
-        }
-        return $aReturn;
-    }
-
-    private function setQuery2ServerAndGetSimpleArray($result, $prefixKey = null)
-    {
-        $iNoOfRows = $result->num_rows;
-        if ($iNoOfRows == 1) {
-            $array2return = null;
-            for ($counter = 0; $counter < $iNoOfRows; $counter++) {
-                $line           = $result->fetch_row();
-                $finfo          = $result->fetch_fields();
-                $column_counter = 0;
-                foreach ($finfo as $value) {
-                    $key                = $value->name;
-                    $array2return[$key] = $line[$column_counter];
-                    $column_counter += 1;
-                }
-            }
-            $result->close();
-            return $array2return;
-        } else {
-            $result->close();
-            return false;
-        }
-    }
-
     /**
      * Place for all MySQL queries used within current class
      *
@@ -677,7 +630,7 @@ class MySQLactions extends ResultFile
     {
         $sReturn = $this->queryClass->setRightQuery($label, $given_parameters);
         if ($sReturn === false) {
-            echo $this->setFeedback(0, _('i18n_Feedback_Error'), sprintf(_('i18n_Feedback_UndefinedQuery'), $label));
+            echo $this->setFeedback(0, dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_Error'), sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_UndefinedQuery'), $label));
         }
         return $sReturn;
     }
