@@ -36,7 +36,7 @@ class MySQLactions extends ResultFile
 
     use \danielgp\common_lib\CommonCode;
 
-    const LOCALE_DOMAIN              = 'nis_messages';
+    const LOCALE_DOMAIN = 'nis_messages';
 
     protected $mySQLconfig     = null;
     protected $mySQLconnection = null;
@@ -470,11 +470,11 @@ class MySQLactions extends ResultFile
             extract($this->mySQLconfig);
             switch ($type) {
                 case 'analyze':
-                    $feedback          = dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_AnalyzeImpossible');
+                    $feedback          = _('i18n_Feedback_AnalyzeImpossible');
                     $feedbackToProvide = sprintf($feedback, $thingsToAnalyze, $host, $port, $username, $db);
                     break;
                 case 'run':
-                    $feedback          = dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_RunImpossible');
+                    $feedback          = _('i18n_Feedback_RunImpossible');
                     $feedbackToProvide = sprintf($feedback, $ftrs['query'], $host, $port, $username, $db);
                     break;
                 default:
@@ -508,13 +508,13 @@ class MySQLactions extends ResultFile
         switch ($sReturnType) {
             case 'noRunJustDisplay':
                 $this->queueDetails .= '<p style="color:grey;">' . $this->getTimestamp()
-                    . sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_MySQL_DisplayedOnly'), htmlentities($sQuery), $sReturnType)
+                    . sprintf(_('i18n_Feedback_MySQL_DisplayedOnly'), htmlentities($sQuery), $sReturnType)
                     . '</p>';
                 return '';
                 break;
             case 'runWithDisplayFirst':
                 $this->queueDetails .= '<p style="color:grey;">' . $this->getTimestamp()
-                    . sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_MySQL_ToBeExecuted'), htmlentities($sQuery), $sReturnType)
+                    . sprintf(_('i18n_Feedback_MySQL_ToBeExecuted'), htmlentities($sQuery), $sReturnType)
                     . '</p>';
                 break;
         }
@@ -524,7 +524,7 @@ class MySQLactions extends ResultFile
                 $iNoOfRows = $result->num_rows;
                 if (($sReturnType != 'runWithDisplayFirst') && (strpos($sReturnType, 'WithDisplay') !== false)) {
                     $this->queueDetails .= '<p style="color:green;">' . $this->getTimestamp()
-                        . sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_MySQL_Executed'), htmlentities($sQuery), $sReturnType, $iNoOfRows)
+                        . sprintf(_('i18n_Feedback_MySQL_Executed'), htmlentities($sQuery), $sReturnType, $iNoOfRows)
                         . '</p>';
                 }
             }
@@ -569,7 +569,7 @@ class MySQLactions extends ResultFile
             extract($this->mySQLconfig);
             $err = $this->mySQLconnection->error;
             $this->queueDetails .= '<p style="color:red;">' . $this->getTimestamp()
-                . sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_MySQL_Error'), htmlentities($sQuery), $host, $port, $username, $err)
+                . sprintf(_('i18n_Feedback_MySQL_Error'), htmlentities($sQuery), $host, $port, $username, $err)
                 . '</p>';
         }
     }
@@ -630,7 +630,7 @@ class MySQLactions extends ResultFile
     {
         $sReturn = $this->queryClass->setRightQuery($label, $given_parameters);
         if ($sReturn === false) {
-            echo $this->setFeedback(0, dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_Error'), sprintf(dgettext(self::LOCALE_DOMAIN, 'i18n_Feedback_UndefinedQuery'), $label));
+            echo $this->setFeedback(0, _('i18n_Feedback_Error'), sprintf(_('i18n_Feedback_UndefinedQuery'), $label));
         }
         return $sReturn;
     }
