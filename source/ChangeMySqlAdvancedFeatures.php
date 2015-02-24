@@ -37,8 +37,6 @@ namespace danielgp\nis2mysql;
 class ChangeMySqlAdvancedFeatures extends MySQLactions
 {
 
-    use \danielgp\common_lib\CommonCode;
-
     private $applicationFlags;
     private $actions;
     private $definer = null;
@@ -195,17 +193,13 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
     private function getInterface()
     {
         $sReturn   = [];
-        $sReturn[] = '<!DOCTYPE html>'
-            . '<html lang="' . str_replace('_', '-', $_SESSION['lang']) . '">'
-            . '<head>'
-            . '<meta charset="utf-8" />'
-            . '<meta name="viewport" content="width=device-width" />'
-            . '<title>' . $this->applicationFlags['name'] . '</title>'
-            . $this->setCssFile('css/main.css')
-            . $this->setJavascriptFile('js/tabber.min.js')
-            . '</head>'
-            . '<body>'
-            . $this->setJavascriptContent('document.write(\'<style type="text/css">.tabber{display:none;}</style>\');')
+        $sReturn[] = $this->setHeaderCommon([
+            'lang'       => str_replace('_', '-', $_SESSION['lang']),
+            'title'      => $this->applicationFlags['name'],
+            'css'        => 'css/main.css',
+            'javascript' => 'js/tabber.min.js',
+        ]);
+        $sReturn[] = $this->setJavascriptContent('document.write(\'<style type="text/css">.tabber{display:none;}</style>\');')
             . '<h1>' . $this->applicationFlags['name'] . '</h1>'
             . $this->setHeaderLanguages()
             . '<div class="tabber" id="tab">';
@@ -219,9 +213,8 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
             . '<hr/>' . 'actions SESSION counted = ' . (isset($_SESSION['a']) ? count($_SESSION['a']) : 0)
             . '<br/>' . 'total SESSION counted = ' . count($_SESSION)
             . '</div><!-- tab0 end -->'
-            . '</div><!-- tabber end -->'
-            . '</body>'
-            . '</html>';
+            . '</div><!-- tabber end -->';
+        $sReturn[] = $this->setFooterCommon();
         return implode('', $sReturn);
     }
 
