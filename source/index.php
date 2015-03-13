@@ -26,7 +26,6 @@
  *
  */
 session_start();
-require_once '../vendor/inetsys/phpgettext/gettext.inc';
 require_once '../vendor/autoload.php';
 
 $app = new danielgp\nis2mysql\ChangeMySqlAdvancedFeatures;

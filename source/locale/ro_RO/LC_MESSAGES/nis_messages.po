@@ -80,7 +80,7 @@ msgid "i18n_TabAdvancedFeature_Choice_Views"
 msgstr "Vizualizări (%d cazuri)"
 
 msgid "i18n_TabAdvancedFeature_Choose"
-msgstr "Alege una sau mai mmulte structuri avansate din lista de mai jos"
+msgstr "Alege una sau mai multe structuri avansate din lista de mai jos"
 
 msgid "i18n_TabAdvancedFeature_IchoseProceed"
 msgstr "Am ales, mai departe!"
