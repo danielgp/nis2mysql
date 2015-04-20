@@ -8,23 +8,24 @@
     "packages": [
         {
             "name": "danielgp/common-lib",
-            "version": "1.7.6",
+            "version": "1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/danielgp/common-lib.git",
-                "reference": "574697cd855c6e0acefcb60401235d38bc3e4176"
+                "reference": "a320f0d5a2dbfa6b7d8dc30bc31ea71eb63a0a5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/danielgp/common-lib/zipball/574697cd855c6e0acefcb60401235d38bc3e4176",
-                "reference": "574697cd855c6e0acefcb60401235d38bc3e4176",
+                "url": "https://api.github.com/repos/danielgp/common-lib/zipball/a320f0d5a2dbfa6b7d8dc30bc31ea71eb63a0a5c",
+                "reference": "a320f0d5a2dbfa6b7d8dc30bc31ea71eb63a0a5c",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-mysqli": "*",
                 "gettext/gettext": "*",
-                "php": ">=5.4"
+                "php": ">=5.4",
+                "phpoffice/phpexcel": "*"
             },
             "type": "library",
             "autoload": {
@@ -49,7 +50,7 @@
                 }
             ],
             "description": "Common functions to be used where needed",
-            "time": "2015-04-19 15:31:15"
+            "time": "2015-04-20 20:29:23"
         },
         {
             "name": "gettext/gettext",
@@ -162,6 +163,63 @@
                 "unicode"
             ],
             "time": "2015-03-27 11:32:41"
+        },
+        {
+            "name": "phpoffice/phpexcel",
+            "version": "1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHPOffice/PHPExcel.git",
+                "reference": "e69a5e4d0ffa7fb6f171859e0a04346e580df30b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHPOffice/PHPExcel/zipball/e69a5e4d0ffa7fb6f171859e0a04346e580df30b",
+                "reference": "e69a5e4d0ffa7fb6f171859e0a04346e580df30b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xml": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHPExcel": "Classes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Maarten Balliauw",
+                    "homepage": "http://blog.maartenballiauw.be"
+                },
+                {
+                    "name": "Mark Baker"
+                },
+                {
+                    "name": "Franck Lefevre",
+                    "homepage": "http://blog.rootslabs.net"
+                },
+                {
+                    "name": "Erik Tilt"
+                }
+            ],
+            "description": "PHPExcel - OpenXML - Read, Create and Write Spreadsheet documents in PHP - Spreadsheet engine",
+            "homepage": "http://phpexcel.codeplex.com",
+            "keywords": [
+                "OpenXML",
+                "excel",
+                "php",
+                "spreadsheet",
+                "xls",
+                "xlsx"
+            ],
+            "time": "2014-03-02 15:22:49"
         }
     ],
     "packages-dev": [],

@@ -588,7 +588,7 @@ class MySQLactions extends ResultFile
                 $infoLine[]          = $value[$value2];
                 $infoDisplayed[$key] = $value[$value2];
             }
-            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArray2json($infoDisplayed) . '</p>';
+            $sReturn[] = '<p>' . $this->getTimestamp() . $this->setArrayToJson($infoDisplayed) . '</p>';
             $sQuery    = implode('"' . $this->configuredGlue() . '"', $infoLine);
             $this->setFileContent([
                 'FileKind' => $this->fileToStore['relevant'],

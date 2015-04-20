@@ -210,8 +210,8 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
             $sReturn[] = $this->getInterfaceSteps($counter);
         }
         $sReturn[] = '<div class="tabbertab" id="tab0" title="' . $this->tApp->gettext('i18n_TabDebug') . '">'
-            . (isset($_REQUEST) ? 'REQUEST = ' . $this->setArray2json($_REQUEST) : '')
-            . '<hr/>' . (isset($_SESSION) ? 'SESSION = ' . $this->setArray2json($_SESSION) : '')
+            . (isset($_REQUEST) ? 'REQUEST = ' . $this->setArrayToJson($_REQUEST) : '')
+            . '<hr/>' . (isset($_SESSION) ? 'SESSION = ' . $this->setArrayToJson($_SESSION) : '')
             . '<hr/>' . 'actions SESSION counted = ' . (isset($_SESSION['a']) ? count($_SESSION['a']) : 0)
             . '<br/>' . 'total SESSION counted = ' . count($_SESSION)
             . '</div><!-- tab0 end -->'
