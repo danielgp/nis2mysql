@@ -586,7 +586,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
                 $sReturn[] = '<b>' . $value . '</b>';
             } else {
                 $sReturn[] = '<a href="?'
-                    . (isset($_REQUEST) ? $this->setArray2String4Url('&amp;', $_REQUEST, ['lang']) . '&amp;' : '')
+                    . (isset($_REQUEST) ? $this->setArrayToStringForUrl('&amp;', $_REQUEST, ['lang']) . '&amp;' : '')
                     . 'lang=' . $key . '">' . $value . '</a>';
             }
         }

@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "danielgp/common-lib",
-            "version": "1.8.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/danielgp/common-lib.git",
-                "reference": "a320f0d5a2dbfa6b7d8dc30bc31ea71eb63a0a5c"
+                "reference": "f3c874d5a758f5d7a21ae38f5179bdef4d4b197f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/danielgp/common-lib/zipball/a320f0d5a2dbfa6b7d8dc30bc31ea71eb63a0a5c",
-                "reference": "a320f0d5a2dbfa6b7d8dc30bc31ea71eb63a0a5c",
+                "url": "https://api.github.com/repos/danielgp/common-lib/zipball/f3c874d5a758f5d7a21ae38f5179bdef4d4b197f",
+                "reference": "f3c874d5a758f5d7a21ae38f5179bdef4d4b197f",
                 "shasum": ""
             },
             "require": {
@@ -31,10 +31,11 @@
             "autoload": {
                 "classmap": [
                     "source/CommonCode.php",
-                    "source/DomComponentsByDanielGPwithCDN.php",
                     "source/DomComponentsByDanielGP.php",
+                    "source/DomComponentsByDanielGPwithCDN.php",
                     "source/MySQLiByDanielGPqueries.php",
                     "source/MySQLiByDanielGP.php",
+                    "source/NetworkComponentsByDanielGP.php",
                     "source/RomanianHolidays.php"
                 ]
             },
@@ -50,7 +51,7 @@
                 }
             ],
             "description": "Common functions to be used where needed",
-            "time": "2015-04-20 20:29:23"
+            "time": "2015-04-21 18:23:57"
         },
         {
             "name": "gettext/gettext",
