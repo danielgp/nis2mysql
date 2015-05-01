@@ -54,8 +54,8 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
         parent::__construct();
         $this->applicationFlags = [
             'available_languages' => [
-                'en_US' => 'EN',
-                'ro_RO' => 'RO',
+                'en_US' => 'US Englih',
+                'ro_RO' => 'Română',
             ],
             'default_language'    => $this->configuredDefaultLanguage(),
             'name'                => 'Normalize MySQL internal structures',
@@ -197,13 +197,15 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
         $sReturn[] = $this->setHeaderCommon([
             'lang'       => str_replace('_', '-', $_SESSION['lang']),
             'title'      => $this->applicationFlags['name'],
-            'css'        => 'css/main.css',
+            'css'        => [
+                '../vendor/components/flag-icon-css/css/flag-icon.min.css',
+                'css/main.css',
+            ],
             'javascript' => 'js/tabber.min.js',
         ]);
         $sReturn[] = $this->setJavascriptContent('document.write(\'<style type="text/css">'
                 . '.tabber{display:none;}</style>\');')
             . '<h1>' . $this->applicationFlags['name'] . '</h1>'
-            . $this->setHeaderLanguages()
             . '<div class="tabber" id="tab">';
         $this->configDefaults();
         for ($counter = 0; $counter <= $this->tabs; $counter++) {
@@ -216,6 +218,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
             . '<br/>' . 'total SESSION counted = ' . count($_SESSION)
             . '</div><!-- tab0 end -->'
             . '</div><!-- tabber end -->';
+        $sReturn[] = $this->setUppeRightBoxLanguages($this->applicationFlags['available_languages']);
         $sReturn[] = $this->setFooterCommon();
         return implode('', $sReturn);
     }
@@ -576,22 +579,5 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
         $translations     = \Gettext\Extractors\Mo::fromFile($localizationFile);
         $this->tApp       = new \Gettext\Translator();
         $this->tApp->loadTranslations($translations);
-    }
-
-    private function setHeaderLanguages()
-    {
-        $sReturn = [];
-        foreach ($this->applicationFlags['available_languages'] as $key => $value) {
-            if ($_SESSION['lang'] === $key) {
-                $sReturn[] = '<b>' . $value . '</b>';
-            } else {
-                $sReturn[] = '<a href="?'
-                    . (isset($_REQUEST) ? $this->setArrayToStringForUrl('&amp;', $_REQUEST, ['lang']) . '&amp;' : '')
-                    . 'lang=' . $key . '">' . $value . '</a>';
-            }
-        }
-        return '<span class="language_box">'
-            . implode(' | ', $sReturn)
-            . '</span>';
     }
 }
