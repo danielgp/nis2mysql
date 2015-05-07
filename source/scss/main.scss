@@ -11,9 +11,9 @@ a {
 h1 {
     font-size: xx-large;
 }
-@import "base.scss";
+@import "../../vendor/danielgp/common-styles/scss/base1.scss";
 @import "base.2014.scss";
-@import "form.scss";
-@import "../../vendor/danielgp/common-lib/source/scss/gradients.scss";
-@import "../../vendor/danielgp/common-lib/source/scss/tabber.scss";
-@import "../../vendor/danielgp/common-lib/source/scss/upperRightBox.scss";
+@import "../../vendor/danielgp/common-styles/scss/form.scss";
+@import "../../vendor/danielgp/common-styles/scss/gradients.scss";
+@import "../../vendor/danielgp/common-styles/scss/tabber.scss";
+@import "../../vendor/danielgp/common-styles/scss/upperRightBox.scss";

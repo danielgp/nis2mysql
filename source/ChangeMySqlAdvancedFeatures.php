@@ -54,7 +54,7 @@ class ChangeMySqlAdvancedFeatures extends MySQLactions
         parent::__construct();
         $this->applicationFlags = [
             'available_languages' => [
-                'en_US' => 'US Englih',
+                'en_US' => 'US English',
                 'ro_RO' => 'Română',
             ],
             'default_language'    => $this->configuredDefaultLanguage(),
