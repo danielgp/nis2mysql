@@ -31,10 +31,10 @@ namespace danielgp\nis2mysql;
  *
  * @author E303778
  */
-class MySQLactions extends ResultFile
-{
+class MySQLactions extends ResultFile {
 
-    use \danielgp\common_lib\CommonCode;
+    use \danielgp\common_lib\CommonCode,
+        \danielgp\network_components\NetworkComponentsByDanielGP;
 
     const LOCALE_DOMAIN = 'nis_messages';
 
@@ -43,13 +43,11 @@ class MySQLactions extends ResultFile
     protected $queryClass;
     protected $queueDetails    = '';
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->queryClass = new AppQueries();
     }
 
-    final protected function actOnAdvancedMySqlFeatureEvents()
-    {
+    final protected function actOnAdvancedMySqlFeatureEvents() {
         $sReturn            = [];
         $this->queueDetails = '';
         $this->connectOrSetFeedbackIfNoMySqlConnection('events');
@@ -99,8 +97,8 @@ class MySQLactions extends ResultFile
                                 'VIEW_DEFINITION' => $value['VIEW_DEFINITION'],
                             ]);
                             $explanation        = 'Modify view, old definer = "'
-                                . $_SESSION['a']['definerToBe'] . '" into "'
-                                . $_SESSION['a']['definerToModify'] . '"';
+                                    . $_SESSION['a']['definerToBe'] . '" into "'
+                                    . $_SESSION['a']['definerToModify'] . '"';
                             $this->setFileContent([
                                 'FileKind'    => 'undo',
                                 'Explanation' => $explanation,
@@ -113,8 +111,8 @@ class MySQLactions extends ResultFile
                                 'ON_COMPLETION' => $value['ON_COMPLETION'],
                             ]);
                             $explanation        = 'Modify event, old definer = "'
-                                . $_SESSION['a']['definerToModify'] . '" into "'
-                                . $_SESSION['a']['definerToBe'] . '"';
+                                    . $_SESSION['a']['definerToModify'] . '" into "'
+                                    . $_SESSION['a']['definerToBe'] . '"';
                             $this->setFileContent([
                                 'FileKind'    => 'do',
                                 'Explanation' => $explanation,
@@ -130,8 +128,7 @@ class MySQLactions extends ResultFile
         return implode('', $sReturn);
     }
 
-    final protected function actOnAdvancedMySqlFeatureStoredRoutines()
-    {
+    final protected function actOnAdvancedMySqlFeatureStoredRoutines() {
         $sReturn              = [];
         $this->queueDetails   = '';
         $this->connectOrSetFeedbackIfNoMySqlConnection('stored routines');
@@ -209,7 +206,7 @@ class MySQLactions extends ResultFile
                             $this->runQuery($sQuery, 'runWithDisplayFirst');
                             $sQuery             = $crtRoutine['Create ' . ucwords(strtolower($value['ROUTINE_TYPE']))];
                             $xplanation         = 'Create the original routine, definer = "'
-                                . $_SESSION['a']['definerToModify'] . '"';
+                                    . $_SESSION['a']['definerToModify'] . '"';
                             $this->setFileContent([
                                 'FileKind'    => 'undo',
                                 'Explanation' => $xplanation,
@@ -224,8 +221,8 @@ class MySQLactions extends ResultFile
                                 'RoutineContent' => $r,
                             ]);
                             $explanation        = 'Modify the routine, old definer = "'
-                                . $_SESSION['a']['definerToBe'] . '" into "'
-                                . $_SESSION['a']['definerToModify'] . '"';
+                                    . $_SESSION['a']['definerToBe'] . '" into "'
+                                    . $_SESSION['a']['definerToModify'] . '"';
                             $this->setFileContent([
                                 'FileKind'    => 'do',
                                 'Explanation' => $explanation,
@@ -241,8 +238,7 @@ class MySQLactions extends ResultFile
         return implode('', $sReturn);
     }
 
-    final protected function actOnAdvancedMySqlFeatureTriggers()
-    {
+    final protected function actOnAdvancedMySqlFeatureTriggers() {
         $sReturn            = [];
         $this->queueDetails = '';
         $this->connectOrSetFeedbackIfNoMySqlConnection('triggers');
@@ -321,7 +317,7 @@ class MySQLactions extends ResultFile
                                 'TableName' => $value['EVENT_OBJECT_TABLE']
                             ]);
                             $explanation           = 'Lock the table of the trigger for Write '
-                                . '(to avoid modications while modification is being done';
+                                    . '(to avoid modications while modification is being done';
                             $this->setFileContent([
                                 'FileKind'    => $this->fileToStore['relevant'],
                                 'Explanation' => $explanation,
@@ -347,8 +343,8 @@ class MySQLactions extends ResultFile
                                 'TriggerContent' => $currentTriggerDetails['SQL Original Statement'],
                             ]);
                             $explanation           = 'Modify the trigger, old definer = "'
-                                . $_SESSION['a']['definerToBe'] . '" into "'
-                                . $_SESSION['a']['definerToModify'] . '"';
+                                    . $_SESSION['a']['definerToBe'] . '" into "'
+                                    . $_SESSION['a']['definerToModify'] . '"';
                             $this->setFileContent([
                                 'FileKind'    => 'do',
                                 'Explanation' => $explanation,
@@ -356,7 +352,7 @@ class MySQLactions extends ResultFile
                             ]);
                             $this->runQuery($sQuery, 'runWithDisplayFirst');
                             $explanation           = 'Create the original trigger, definer = "'
-                                . $_SESSION['a']['definerToModify'] . '"';
+                                    . $_SESSION['a']['definerToModify'] . '"';
                             $this->setFileContent([
                                 'FileKind'    => 'undo',
                                 'Explanation' => $explanation,
@@ -375,8 +371,7 @@ class MySQLactions extends ResultFile
         return implode('', $sReturn);
     }
 
-    final protected function actOnAdvancedMySqlFeatureViews()
-    {
+    final protected function actOnAdvancedMySqlFeatureViews() {
         $sReturn            = [];
         $this->connectOrSetFeedbackIfNoMySqlConnection('views');
         $this->queueDetails = '';
@@ -432,8 +427,8 @@ class MySQLactions extends ResultFile
                                 'VIEW_DEFINITION' => $value['VIEW_DEFINITION'],
                             ]);
                             $explanation        = 'Modify view, old definer = "'
-                                . $_SESSION['a']['definerToBe'] . '" into "'
-                                . $_SESSION['a']['definerToModify'] . '"';
+                                    . $_SESSION['a']['definerToBe'] . '" into "'
+                                    . $_SESSION['a']['definerToModify'] . '"';
                             $this->setFileContent([
                                 'FileKind'    => 'undo',
                                 'Explanation' => $explanation,
@@ -445,8 +440,8 @@ class MySQLactions extends ResultFile
                                 'VIEW_DEFINITION' => $value['VIEW_DEFINITION'],
                             ]);
                             $explanation        = 'Modify view, old definer = "'
-                                . $_SESSION['a']['definerToModify'] . '" into "'
-                                . $_SESSION['a']['definerToBe'] . '"';
+                                    . $_SESSION['a']['definerToModify'] . '" into "'
+                                    . $_SESSION['a']['definerToBe'] . '"';
                             $this->setFileContent([
                                 'FileKind'    => 'do',
                                 'Explanation' => $explanation,
@@ -463,8 +458,7 @@ class MySQLactions extends ResultFile
         return implode('', $sReturn);
     }
 
-    protected function connectOrSetFeedbackIfNoMySqlConnection($thingsToAnalyze, $type = 'analyze', $ftrs = null)
-    {
+    protected function connectOrSetFeedbackIfNoMySqlConnection($thingsToAnalyze, $type = 'analyze', $ftrs = null) {
         $this->connectToMySqlServer();
         if (is_null($this->mySQLconnection)) {
             extract($this->mySQLconfig);
@@ -485,8 +479,7 @@ class MySQLactions extends ResultFile
         }
     }
 
-    protected function connectToMySqlServer()
-    {
+    protected function connectToMySqlServer() {
         $cfg = $this->configuredMySqlServers();
         if (is_null($this->mySQLconfig)) {
             $this->mySQLconfig = [
@@ -502,20 +495,19 @@ class MySQLactions extends ResultFile
         }
     }
 
-    protected function runQuery($sQuery, $sReturnType = null, $prefixKey = null)
-    {
+    protected function runQuery($sQuery, $sReturnType = null, $prefixKey = null) {
         $this->connectOrSetFeedbackIfNoMySqlConnection('', 'run', ['query' => htmlentities($sQuery)]);
         switch ($sReturnType) {
             case 'noRunJustDisplay':
                 $this->queueDetails .= '<p style="color:grey;">' . $this->getTimestamp()
-                    . sprintf(_('i18n_Feedback_MySQL_DisplayedOnly'), htmlentities($sQuery), $sReturnType)
-                    . '</p>';
+                        . sprintf(_('i18n_Feedback_MySQL_DisplayedOnly'), htmlentities($sQuery), $sReturnType)
+                        . '</p>';
                 return '';
                 break;
             case 'runWithDisplayFirst':
                 $this->queueDetails .= '<p style="color:grey;">' . $this->getTimestamp()
-                    . sprintf(_('i18n_Feedback_MySQL_ToBeExecuted'), htmlentities($sQuery), $sReturnType)
-                    . '</p>';
+                        . sprintf(_('i18n_Feedback_MySQL_ToBeExecuted'), htmlentities($sQuery), $sReturnType)
+                        . '</p>';
                 break;
         }
         $result = $this->mySQLconnection->query($sQuery);
@@ -524,30 +516,30 @@ class MySQLactions extends ResultFile
                 $iNoOfRows = $result->num_rows;
                 if (($sReturnType != 'runWithDisplayFirst') && (strpos($sReturnType, 'WithDisplay') !== false)) {
                     $this->queueDetails .= '<p style="color:green;">' . $this->getTimestamp()
-                        . sprintf(_('i18n_Feedback_MySQL_Executed'), htmlentities($sQuery), $sReturnType, $iNoOfRows)
-                        . '</p>';
+                            . sprintf(_('i18n_Feedback_MySQL_Executed'), htmlentities($sQuery), $sReturnType, $iNoOfRows)
+                            . '</p>';
                 }
             }
             switch ($sReturnType) {
                 case 'array_pairs_key_valueWithDisplay':
                 case 'array_pairs_key_value':
                     $aReturn = $this->setMySQLquery2ServerByPattern([
-                            'NoOfColumns' => $result->field_count,
-                            'NoOfRows'    => $result->num_rows,
-                            'QueryResult' => $result,
-                            'returnType'  => 'array_pairs_key_value',
-                            'return'      => $aReturn
-                        ])['result'];
+                                'NoOfColumns' => $result->field_count,
+                                'NoOfRows'    => $result->num_rows,
+                                'QueryResult' => $result,
+                                'returnType'  => 'array_pairs_key_value',
+                                'return'      => $aReturn
+                            ])['result'];
                     break;
                 case 'fullArray3WithDisplay':
                 case 'fullArray3':
                     $aReturn = $this->setMySQLquery2ServerByPattern([
-                            'NoOfColumns' => $result->field_count,
-                            'NoOfRows'    => $result->num_rows,
-                            'QueryResult' => $result,
-                            'returnType'  => 'full_array_key_numbered',
-                            'return'      => $aReturn
-                        ])['result'];
+                                'NoOfColumns' => $result->field_count,
+                                'NoOfRows'    => $result->num_rows,
+                                'QueryResult' => $result,
+                                'returnType'  => 'full_array_key_numbered',
+                                'return'      => $aReturn
+                            ])['result'];
                     break;
                 case 'runWithDisplayFirst':
                     break;
@@ -569,13 +561,12 @@ class MySQLactions extends ResultFile
             extract($this->mySQLconfig);
             $err = $this->mySQLconnection->error;
             $this->queueDetails .= '<p style="color:red;">' . $this->getTimestamp()
-                . sprintf(_('i18n_Feedback_MySQL_Error'), htmlentities($sQuery), $host, $port, $username, $err)
-                . '</p>';
+                    . sprintf(_('i18n_Feedback_MySQL_Error'), htmlentities($sQuery), $host, $port, $username, $err)
+                    . '</p>';
         }
     }
 
-    protected function runQueryWithFeedback($listOfFields, $listOfEvents)
-    {
+    protected function runQueryWithFeedback($listOfFields, $listOfEvents) {
         $sQuery = implode('"' . $this->configuredGlue() . '"', array_keys($listOfFields));
         $this->setFileContent([
             'FileKind' => $this->fileToStore['relevant'],
@@ -604,8 +595,7 @@ class MySQLactions extends ResultFile
         return implode('', $sReturn);
     }
 
-    protected function setMySQLsessionCharacterAndCollation($value)
-    {
+    protected function setMySQLsessionCharacterAndCollation($value) {
         $sQuery = $this->storedQuery('SetSessionCharacterAndCollation', [
             'CHARACTER_SET_CLIENT' => $value['CHARACTER_SET_CLIENT'],
             'COLLATION_CONNECTION' => $value['COLLATION_CONNECTION'],
@@ -626,12 +616,12 @@ class MySQLactions extends ResultFile
      * @param array $given_parameters
      * @return string
      */
-    final protected function storedQuery($label, $given_parameters = null)
-    {
+    final protected function storedQuery($label, $given_parameters = null) {
         $sReturn = $this->queryClass->setRightQuery($label, $given_parameters);
         if ($sReturn === false) {
             echo $this->setFeedback(0, _('i18n_Feedback_Error'), sprintf(_('i18n_Feedback_UndefinedQuery'), $label));
         }
         return $sReturn;
     }
+
 }

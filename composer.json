@@ -13,8 +13,10 @@
     "require": {
         "php": ">=5.4",
         "ext-mysqli": "*",
+        "components/flag-icon-css": "*",
         "danielgp/common-lib": "*",
         "danielgp/common-styles": "*",
+        "fortawesome/font-awesome": "*",
         "gettext/gettext": "*"
     },
     "autoload": {
