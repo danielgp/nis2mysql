@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "175b8493aa057ea5c22f77dc703df612",
+    "content-hash": "7dd0b7a3a668f79be972d87e324391df",
     "packages": [
         {
             "name": "components/flag-icon-css",
@@ -42,7 +42,7 @@
                 }
             ],
             "description": "CSS for vector based country flags",
-            "time": "2015-03-26 16:41:06"
+            "time": "2015-03-26T16:41:06+00:00"
         },
         {
             "name": "danielgp/browser-agent-info",
@@ -89,7 +89,7 @@
                 }
             ],
             "description": "Get client information from browser agent string",
-            "time": "2015-07-10 13:46:31"
+            "time": "2015-07-10T13:46:31+00:00"
         },
         {
             "name": "danielgp/common-lib",
@@ -142,7 +142,7 @@
                 }
             ],
             "description": "Common functions to be used where needed",
-            "time": "2015-07-10 15:38:32"
+            "time": "2015-07-10T15:38:32+00:00"
         },
         {
             "name": "danielgp/common-styles",
@@ -174,7 +174,7 @@
                 }
             ],
             "description": "Common styles crafted in SCSS and targeted to specific DOM areas so assambling would be easier",
-            "time": "2015-05-20 21:52:30"
+            "time": "2015-05-20T21:52:30+00:00"
         },
         {
             "name": "danielgp/network-components",
@@ -214,20 +214,20 @@
                 }
             ],
             "description": "Common functions to be used where needed",
-            "time": "2015-06-20 19:49:39"
+            "time": "2015-06-20T19:49:39+00:00"
         },
         {
             "name": "doctrine/cache",
-            "version": "v1.4.1",
+            "version": "v1.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "c9eadeb743ac6199f7eec423cb9426bc518b7b03"
+                "reference": "47cdc76ceb95cc591d9c79a36dc3794975b5d136"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/c9eadeb743ac6199f7eec423cb9426bc518b7b03",
-                "reference": "c9eadeb743ac6199f7eec423cb9426bc518b7b03",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/47cdc76ceb95cc591d9c79a36dc3794975b5d136",
+                "reference": "47cdc76ceb95cc591d9c79a36dc3794975b5d136",
                 "shasum": ""
             },
             "require": {
@@ -248,8 +248,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Doctrine\\Common\\Cache\\": "lib/"
+                "psr-4": {
+                    "Doctrine\\Common\\Cache\\": "lib/Doctrine/Common/Cache"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -284,7 +284,11 @@
                 "cache",
                 "caching"
             ],
-            "time": "2015-04-15 00:11:59"
+            "support": {
+                "issues": "https://github.com/doctrine/cache/issues",
+                "source": "https://github.com/doctrine/cache/tree/1.5.x"
+            },
+            "time": "2015-12-19T05:03:47+00:00"
         },
         {
             "name": "fortawesome/font-awesome",
@@ -332,7 +336,7 @@
                 "font",
                 "icon"
             ],
-            "time": "2015-01-22 18:09:42"
+            "time": "2015-01-22T18:09:42+00:00"
         },
         {
             "name": "gettext/gettext",
@@ -391,7 +395,7 @@
                 "po",
                 "translation"
             ],
-            "time": "2015-04-28 17:50:01"
+            "time": "2015-04-28T17:50:01+00:00"
         },
         {
             "name": "gettext/languages",
@@ -445,7 +449,7 @@
                 "translations",
                 "unicode"
             ],
-            "time": "2015-03-27 11:32:41"
+            "time": "2015-03-27T11:32:41+00:00"
         },
         {
             "name": "mustangostang/spyc",
@@ -492,7 +496,7 @@
                 "yaml",
                 "yml"
             ],
-            "time": "2013-02-21 10:52:01"
+            "time": "2013-02-21T10:52:01+00:00"
         },
         {
             "name": "piwik/device-detector",
@@ -543,7 +547,7 @@
                 "parser",
                 "useragent"
             ],
-            "time": "2015-06-23 21:25:52"
+            "time": "2015-06-23T21:25:52+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -592,7 +596,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-08 09:37:21"
+            "time": "2015-06-08T09:37:21+00:00"
         },
         {
             "name": "symfony/finder",
@@ -641,7 +645,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-04 20:11:48"
+            "time": "2015-06-04T20:11:48+00:00"
         }
     ],
     "packages-dev": [],
@@ -654,5 +658,6 @@
         "php": ">=5.4",
         "ext-mysqli": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
 }
